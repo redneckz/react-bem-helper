@@ -1,0 +1,45 @@
+{
+    "extends": "airbnb",
+    "parser": "babel-eslint",
+    "parserOptions": {
+        "ecmaVersion": 7,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "classes": true
+        }
+    },
+    "env": {
+        "browser": true,
+        "node": true,
+        "jest": true
+    },
+    "rules": {
+        "indent": ["error", 4, {"SwitchCase": 1}],
+        "import/prefer-default-export": "off",
+        "import/no-extraneous-dependencies": [
+            "warn", {
+                "devDependencies": ["!**/*.spec.js"],
+                "optionalDependencies": false
+            }
+        ],
+        "object-curly-spacing": ["error", "never"],
+        "comma-dangle": ["error", "never"],
+        "class-methods-use-this": [
+            "warn", {
+                "exceptMethods": ["render"]
+            }
+        ],
+        "max-len": ["error", 120, 2, {
+            "ignoreUrls": true,
+            "ignoreComments": false,
+            "ignoreRegExpLiterals": true,
+            "ignoreStrings": true,
+            "ignoreTemplateLiterals": true
+        }],
+        "no-use-before-define": ["error", {"functions": false}],
+        "react/jsx-indent": ["error", 4],
+        "react/jsx-indent-props": ["error", 4],
+        "react/prop-types": ["off"],
+        "react/prefer-stateless-function": ["off", {"ignorePureComponents": true}]
+    }
+}
