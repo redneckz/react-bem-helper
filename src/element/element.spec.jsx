@@ -20,34 +20,34 @@ describe('BEM element decorator', () => {
         expect(WrappedFooBar.displayName).toEqual('element(bar)');
     });
 
-    it('should inject [elementClassName] property', () => {
+    it('should inject [elementClasses] property', () => {
         const WrappedFooBar = element('bar')(FooBar);
         renderer.render(<WrappedFooBar />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-        expect(wrappedFooBar.props.elementClassName).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
+        expect(isString(wrappedFooBar.props.elementClasses)).toBeTruthy();
+        expect(wrappedFooBar.props.elementClasses).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
     });
 
-    it('should mixin provided [className] property into [elementClassName] property', () => {
+    it('should mixin provided [className] property into [elementClasses] property', () => {
         const WrappedFooBar = element('bar')(FooBar);
         renderer.render(<WrappedFooBar className="quux" />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-        const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
+        expect(isString(wrappedFooBar.props.elementClasses)).toBeTruthy();
+        const fooBarClasses = wrappedFooBar.props.elementClasses.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar`);
         expect(fooBarClasses).toContain('quux');
     });
 
-    it('should map properties to modifiers and mixin corresponding classes to [elementClassName]', () => {
+    it('should map properties to modifiers and mixin corresponding classes to [elementClasses]', () => {
         const WrappedFooBar = element(
             'bar',
             ({baz}) => `baz-${baz}`
         )(FooBar);
         renderer.render(<WrappedFooBar baz="quux" />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-        const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
+        expect(isString(wrappedFooBar.props.elementClasses)).toBeTruthy();
+        const fooBarClasses = wrappedFooBar.props.elementClasses.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar`);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`);
@@ -60,8 +60,8 @@ describe('BEM element decorator', () => {
         )(FooBar);
         renderer.render(<WrappedFooBar baz={false} />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-        const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
+        expect(isString(wrappedFooBar.props.elementClasses)).toBeTruthy();
+        const fooBarClasses = wrappedFooBar.props.elementClasses.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar`);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}not-baz`);
@@ -78,8 +78,8 @@ describe('BEM element decorator', () => {
         )(FooBar);
         renderer.render(<WrappedFooBar baz="quux" />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-        const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
+        expect(isString(wrappedFooBar.props.elementClasses)).toBeTruthy();
+        const fooBarClasses = wrappedFooBar.props.elementClasses.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain('foo#123');
         expect(fooBarClasses).toContain('quux#456');
