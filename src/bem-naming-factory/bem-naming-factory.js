@@ -3,6 +3,8 @@ import isPlainObject from 'lodash/isPlainObject';
 import mapKeys from 'lodash/mapKeys';
 import kebabCase from 'lodash/kebabCase';
 import isArray from 'lodash/isArray';
+import isUndefined from 'lodash/isUndefined';
+import negate from 'lodash/negate';
 import {Config} from '../config';
 import {assertNamePart} from '../bem-naming-validators';
 
@@ -19,14 +21,14 @@ export function createElementNameFactory(block, element) {
     return createModifiersMapper(`${block}${ELEMENT_SEPARATOR}${element}`);
 }
 
-function createModifiersMapper(name) {
+export function createModifiersMapper(name) {
     return function mapModifier(modifier) {
         if (isString(modifier)) {
             return `${name}${MODIFIER_SEPARATOR}${kebabCase(modifier)}`;
         } else if (isPlainObject(modifier)) {
             return mapKeys(modifier, (value, key) => mapModifier(key));
         } else if (isArray(modifier)) {
-            return modifier.map(mapModifier);
+            return modifier.filter(negate(isUndefined)).map(mapModifier);
         }
         return name;
     };

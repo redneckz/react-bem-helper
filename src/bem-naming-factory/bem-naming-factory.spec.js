@@ -1,4 +1,4 @@
-import {createBlockNameFactory, createElementNameFactory} from './bem-naming-factory';
+import {createBlockNameFactory, createElementNameFactory, createModifiersMapper} from './bem-naming-factory';
 import {Config} from '../config';
 
 Config.ASSERTION_ENABLED = true;
@@ -85,6 +85,14 @@ describe('BEM naming factory', () => {
             [...INVALID_NAME_PARTS, ...EMPTY_VALUES].forEach((element) => {
                 expect(() => createElementNameFactory('foo', element)).toThrow();
             });
+        });
+    });
+
+    describe('createModifiersMapper', () => {
+        it('should ignore undefined items in the array of modifiers', () => {
+            const modifiersMapper = createModifiersMapper('foo');
+            expect(modifiersMapper([undefined, 'baz', undefined]))
+                .toEqual([`foo${MODIFIER_SEPARATOR}baz`]);
         });
     });
 });
