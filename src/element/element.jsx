@@ -2,6 +2,7 @@ import React from 'react';
 import noop from 'lodash/noop';
 import isFunction from 'lodash/isFunction';
 import zipObject from 'lodash/zipObject';
+import assign from 'lodash/assign';
 import classNames from 'classnames/bind';
 import {assertNamePart} from '../bem-naming-validators';
 import {createElementNameFactory} from '../bem-naming-factory';
@@ -13,8 +14,8 @@ export function element(elementName, mapPropsToModifiers = noop) {
         throw new TypeError('[mapPropsToModifiers] should be a function');
     }
     return (WrappedComponent) => {
-        const cx = classNames.bind(WrappedComponent.styles || {});
-        function Wrapper(props, {blockName, blockModifiers} = {}) {
+        function Wrapper(props, {blockName, blockModifiers, blockStyles} = {}) {
+            const cx = classNames.bind(assign({}, blockStyles, WrappedComponent.styles));
             const {className} = props;
             const modifiers = mapPropsToModifiers(props, normalizeBlockModifiers(blockModifiers));
             const elementNameFactory = createElementNameFactory(blockName, elementName);

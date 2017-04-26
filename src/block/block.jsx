@@ -23,7 +23,8 @@ export function block(blockName, mapPropsToModifiers = noop) {
                 const modifiers = mapPropsToModifiers(this.props);
                 return {
                     blockName,
-                    blockModifiers: classNames(modifiers)
+                    blockModifiers: classNames(modifiers),
+                    blockStyles: WrappedComponent.styles || {}
                 };
             }
 
