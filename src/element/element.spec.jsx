@@ -58,7 +58,7 @@ describe('BEM element decorator', () => {
             'bar',
             ({baz}) => ({notBaz: !baz})
         )(FooBar);
-        renderer.render(<WrappedFooBar baz={false}/>, {blockName: 'foo'});
+        renderer.render(<WrappedFooBar baz={false} />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
         expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
         const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
@@ -99,7 +99,7 @@ describe('BEM element decorator', () => {
     });
 
     describe('which wraps a component with modular css', () => {
-        function checkClasses(renderer) {
+        function checkClasses() {
             const wrappedFooBar = renderer.getRenderOutput();
             expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
             const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
@@ -117,8 +117,8 @@ describe('BEM element decorator', () => {
                 'bar',
                 ({baz}) => `baz-${baz}`
             )(FooBar);
-            renderer.render(<WrappedFooBar baz="quux"/>, {blockName: 'foo'});
-            checkClasses(renderer);
+            renderer.render(<WrappedFooBar baz="quux" />, {blockName: 'foo'});
+            checkClasses();
         });
 
         it('should take a class mapping from the context property [blockStyles]', () => {
@@ -136,7 +136,7 @@ describe('BEM element decorator', () => {
                     }
                 }
             );
-            checkClasses(renderer);
+            checkClasses();
         });
 
         it('should take a class mapping from the context property and from the static field', () => {
@@ -156,7 +156,7 @@ describe('BEM element decorator', () => {
                     }
                 }
             );
-            checkClasses(renderer);
+            checkClasses();
         });
     });
 });

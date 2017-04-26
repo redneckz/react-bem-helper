@@ -1,12 +1,12 @@
 import camelCase from 'lodash/camelCase';
 import upperFirst from 'lodash/upperFirst';
 import isString from 'lodash/isString';
-import { assertion } from '../assertion';
+import {assertion} from '../assertion';
 
 
 export function isValidNamePart(name) {
     return isString(name) && name.split('-')
-        .every(word => /^[a-z][a-z0-9]*$/.test(word));
+            .every(word => /^[a-z][a-z0-9]*$/.test(word));
 }
 
 export function isValidComponentName(componentName, name) {
