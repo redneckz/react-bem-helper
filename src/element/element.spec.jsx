@@ -58,31 +58,13 @@ describe('BEM element decorator', () => {
             'bar',
             ({baz}) => ({notBaz: !baz})
         )(FooBar);
-        renderer.render(<WrappedFooBar baz={false} />, {blockName: 'foo'});
+        renderer.render(<WrappedFooBar baz={false}/>, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
         expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
         const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar`);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}not-baz`);
-    });
-
-    it('should support modular CSS (styles map should be defined as static field [styles])', () => {
-        FooBar.styles = {
-            [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123',
-            [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: 'quux#456'
-        };
-        const WrappedFooBar = element(
-            'bar',
-            ({baz}) => `baz-${baz}`
-        )(FooBar);
-        renderer.render(<WrappedFooBar baz="quux" />, {blockName: 'foo'});
-        const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-        const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
-        expect(fooBarClasses).toHaveLength(2);
-        expect(fooBarClasses).toContain('foo#123');
-        expect(fooBarClasses).toContain('quux#456');
     });
 
     it('should pass block modifiers to [mapPropsToModifiers] function as second argument', () => {
@@ -114,5 +96,67 @@ describe('BEM element decorator', () => {
 
     it('should fail in case of invalid element name (not kebab-case)', () => {
         expect(() => element('BAR')).toThrow(/^\[BEM\].+/);
+    });
+
+    describe('which wraps a component with modular css', () => {
+        function checkClasses(renderer) {
+            const wrappedFooBar = renderer.getRenderOutput();
+            expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
+            const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
+            expect(fooBarClasses).toHaveLength(2);
+            expect(fooBarClasses).toContain('foo#123');
+            expect(fooBarClasses).toContain('quux#456');
+        }
+
+        it('should take a class mapping from the static field [styles]', () => {
+            FooBar.styles = {
+                [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123',
+                [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: 'quux#456'
+            };
+            const WrappedFooBar = element(
+                'bar',
+                ({baz}) => `baz-${baz}`
+            )(FooBar);
+            renderer.render(<WrappedFooBar baz="quux"/>, {blockName: 'foo'});
+            checkClasses(renderer);
+        });
+
+        it('should take a class mapping from the context property [blockStyles]', () => {
+            const WrappedFooBar = element(
+                'bar',
+                ({baz}) => `baz-${baz}`
+            )(FooBar);
+            renderer.render(
+                <WrappedFooBar baz="quux" />,
+                {
+                    blockName: 'foo',
+                    blockStyles: {
+                        [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123',
+                        [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: 'quux#456'
+                    }
+                }
+            );
+            checkClasses(renderer);
+        });
+
+        it('should take a class mapping from the context property and from the static field', () => {
+            FooBar.styles = {
+                [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123'
+            };
+            const WrappedFooBar = element(
+                'bar',
+                ({baz}) => `baz-${baz}`
+            )(FooBar);
+            renderer.render(
+                <WrappedFooBar baz="quux" />,
+                {
+                    blockName: 'foo',
+                    blockStyles: {
+                        [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: 'quux#456'
+                    }
+                }
+            );
+            checkClasses(renderer);
+        });
     });
 });
