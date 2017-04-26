@@ -31,12 +31,12 @@ export function block(blockName, mapPropsToModifiers = noop) {
                 const {className} = this.props;
                 const modifiers = mapPropsToModifiers(this.props);
                 const blockNameFactory = createBlockNameFactory(blockName);
-                const blockClassName = cx(
+                const blockClasses = cx(
                     blockNameFactory(),
                     modifiers && blockNameFactory(modifiers),
                     className
                 );
-                return <WrappedComponent {...this.props} blockClassName={blockClassName} />;
+                return <WrappedComponent {...this.props} blockClasses={blockClasses} />;
             }
         };
     };

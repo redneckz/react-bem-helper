@@ -18,12 +18,12 @@ export function element(elementName, mapPropsToModifiers = noop) {
             const {className} = props;
             const modifiers = mapPropsToModifiers(props, normalizeBlockModifiers(blockModifiers));
             const elementNameFactory = createElementNameFactory(blockName, elementName);
-            const elementClassName = cx(
+            const elementClasses = cx(
                 elementNameFactory(),
                 modifiers && elementNameFactory(modifiers),
                 className
             );
-            return <WrappedComponent {...props} elementClassName={elementClassName} />;
+            return <WrappedComponent {...props} elementClasses={elementClasses} />;
         }
         Wrapper.displayName = `element(${elementName})`;
         Wrapper.contextTypes = blockContextTypes;
