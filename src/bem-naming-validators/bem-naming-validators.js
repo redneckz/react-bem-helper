@@ -1,7 +1,8 @@
-import isString from 'lodash/isString';
 import camelCase from 'lodash/camelCase';
 import upperFirst from 'lodash/upperFirst';
-import {Config} from '../config';
+import isString from 'lodash/isString';
+import { assertion } from '../assertion';
+
 
 export function isValidNamePart(name) {
     return isString(name) && name.split('-')
@@ -21,11 +22,3 @@ export const assertComponentName = assertion(
     isValidComponentName,
     'Invalid component name'
 );
-
-function assertion(validator, message) {
-    return (...args) => {
-        if (Config.ASSERTION_ENABLED && !validator(...args)) {
-            throw new Error(`[BEM] ${message}: ${JSON.stringify(args)}`);
-        }
-    };
-}
