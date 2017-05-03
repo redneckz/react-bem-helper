@@ -51,8 +51,8 @@
   "scripts": {
     "prepublish": "npm run eslint && npm run test && npm run clean && npm run build",
     "build": "cross-env NODE_ENV=production \"npm run build:commonjs && npm run build:es\"",
-    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir dist --source-maps",
-    "build:es": "cross-env BABEL_ENV=es babel src --out-dir es --source-maps",
+    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --ignore *.spec.* --out-dir dist --source-maps",
+    "build:es": "cross-env BABEL_ENV=es babel src --ignore *.spec.* --out-dir es --source-maps",
     "test": "npm run eslint && npm run jest",
     "jest": "jest",
     "jest:watch": "npm run jest -- --watch",
