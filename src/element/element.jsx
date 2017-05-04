@@ -14,6 +14,7 @@ export function element(elementName, mapPropsToModifiers = noop) {
         throw new TypeError('[mapPropsToModifiers] should be a function');
     }
     return (WrappedComponent) => {
+        WrappedComponent.displayName = elementName; // eslint-disable-line no-param-reassign
         function Wrapper(props, {blockName, blockModifiers, blockStyles} = {}) {
             const cx = classNames.bind(assign({}, blockStyles, WrappedComponent.styles));
             const {className} = props;

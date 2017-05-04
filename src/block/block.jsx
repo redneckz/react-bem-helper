@@ -13,6 +13,7 @@ export function block(blockName, mapPropsToModifiers = noop) {
     }
     return (WrappedComponent) => {
         assertComponentName(WrappedComponent.name, blockName);
+        WrappedComponent.displayName = blockName; // eslint-disable-line no-param-reassign
         const cx = classNames.bind(WrappedComponent.styles || {});
         return class Wrapper extends React.PureComponent {
             static displayName = `block(${blockName})`;
