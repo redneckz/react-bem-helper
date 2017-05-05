@@ -1,31 +1,45 @@
 import React from 'react';
 import noop from 'lodash/noop';
 import isFunction from 'lodash/isFunction';
-import zipObject from 'lodash/zipObject';
-import assign from 'lodash/assign';
 import classNames from 'classnames/bind';
-import {assertNamePart} from '../bem-naming-validators';
+import {assertNamePart, assertComponentName} from '../bem-naming-validators';
 import {createElementNameFactory} from '../bem-naming-factory';
 import {blockContextTypes} from '../block';
+import {
+    chooseModifierComponent, getDefaultComponent,
+    normalizeModifiers
+} from '../modifier';
 
-export function element(elementName, mapPropsToModifiers = noop) {
+export function element(elementName, mapPropsToModifiers = noop, {styles} = {}) {
     assertNamePart(elementName);
     if (!isFunction(mapPropsToModifiers)) {
         throw new TypeError('[mapPropsToModifiers] should be a function');
     }
-    return (WrappedComponent) => {
-        WrappedComponent.displayName = elementName; // eslint-disable-line no-param-reassign
+    return (...WrappedComponents) => {
+        WrappedComponents.forEach((Wrapped) => {
+            assertComponentName(Wrapped.name, elementName);
+            Wrapped.displayName = elementName; // eslint-disable-line no-param-reassign
+        });
+        const DefaultComponent = getDefaultComponent(WrappedComponents);
         function Wrapper(props, {blockName, blockModifiers, blockStyles} = {}) {
-            const cx = classNames.bind(assign({}, blockStyles, WrappedComponent.styles));
             const {className} = props;
-            const modifiers = mapPropsToModifiers(props, normalizeBlockModifiers(blockModifiers));
+            const modifiers = mapPropsToModifiers(props, normalizeModifiers(blockModifiers));
+            const cx = classNames.bind(DefaultComponent.styles || styles || blockStyles || {});
             const elementNameFactory = createElementNameFactory(blockName, elementName);
             const elementClassName = cx(
                 elementNameFactory(),
                 modifiers && elementNameFactory(modifiers),
                 className
             );
-            return <WrappedComponent {...props} elementClassName={elementClassName} />;
+            const TargetComponent = chooseModifierComponent(
+                WrappedComponents,
+                modifiers
+            );
+            return React.createElement(TargetComponent, {
+                ...props,
+                className: elementClassName,
+                elementClassName
+            });
         }
         Wrapper.displayName = `element(${elementName})`;
         Wrapper.contextTypes = blockContextTypes;
@@ -42,12 +56,4 @@ export function transparent(mapPropsToModifiers = noop) {
         mapPropsToModifiers(props),
         blockModifiers
     ];
-}
-
-function normalizeBlockModifiers(blockModifiers) {
-    if (!blockModifiers) {
-        return {};
-    }
-    const blockModifiersList = blockModifiers.split(' ');
-    return zipObject(blockModifiersList, blockModifiersList);
 }

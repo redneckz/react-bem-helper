@@ -3,34 +3,35 @@ import ReactShallowRenderer from 'react-test-renderer/shallow';
 import isString from 'lodash/isString';
 import {Config} from '../config';
 import {element} from './element';
+import {modifier} from '../modifier';
 
 Config.ASSERTION_ENABLED = true;
 const {ELEMENT_SEPARATOR, MODIFIER_SEPARATOR} = Config;
 
 describe('BEM element decorator', () => {
     let renderer;
-    let FooBar;
+    let Bar;
     beforeEach(() => {
         renderer = new ReactShallowRenderer();
-        FooBar = () => <div />;
+        Bar = () => <div />;
     });
 
     it('should have [displayName] containing element name', () => {
-        const WrappedFooBar = element('bar')(FooBar);
-        expect(WrappedFooBar.displayName).toEqual('element(bar)');
+        const WrappedBar = element('bar')(Bar);
+        expect(WrappedBar.displayName).toEqual('element(bar)');
     });
 
-    it('should inject [elementClassName] property', () => {
-        const WrappedFooBar = element('bar')(FooBar);
-        renderer.render(<WrappedFooBar />, {blockName: 'foo'});
+    it('should inject [elementClassName] property with valid BEM name', () => {
+        const WrappedBar = element('bar')(Bar);
+        renderer.render(<WrappedBar />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
         expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
         expect(wrappedFooBar.props.elementClassName).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
     });
 
     it('should mixin provided [className] property into [elementClassName] property', () => {
-        const WrappedFooBar = element('bar')(FooBar);
-        renderer.render(<WrappedFooBar className="quux" />, {blockName: 'foo'});
+        const WrappedBar = element('bar')(Bar);
+        renderer.render(<WrappedBar className="quux" />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
         expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
         const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
@@ -39,12 +40,12 @@ describe('BEM element decorator', () => {
         expect(fooBarClasses).toContain('quux');
     });
 
-    it('should map properties to modifiers and mixin corresponding classes to [elementClassName]', () => {
-        const WrappedFooBar = element(
+    it('should transduce properties to modifiers and mixin corresponding classes into [elementClassName]', () => {
+        const WrappedBar = element(
             'bar',
             ({baz}) => `baz-${baz}`
-        )(FooBar);
-        renderer.render(<WrappedFooBar baz="quux" />, {blockName: 'foo'});
+        )(Bar);
+        renderer.render(<WrappedBar baz="quux" />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
         expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
         const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
@@ -54,11 +55,11 @@ describe('BEM element decorator', () => {
     });
 
     it('should accept "classnames" compatible structures as modifier', () => {
-        const WrappedFooBar = element(
+        const WrappedBar = element(
             'bar',
             ({baz}) => ({notBaz: !baz})
-        )(FooBar);
-        renderer.render(<WrappedFooBar baz={false} />, {blockName: 'foo'});
+        )(Bar);
+        renderer.render(<WrappedBar baz={false} />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
         expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
         const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
@@ -67,14 +68,14 @@ describe('BEM element decorator', () => {
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}not-baz`);
     });
 
-    it('should pass block modifiers to [mapPropsToModifiers] function as second argument', () => {
+    it('should pass block modifiers to [mapPropsToModifiers] transducer as second argument', () => {
         const mapPropsToModifiers = jest.fn().mockReturnValue('quux');
-        const WrappedFooBar = element(
+        const WrappedBar = element(
             'bar',
             mapPropsToModifiers
-        )(FooBar);
+        )(Bar);
         renderer.render(
-            <WrappedFooBar />,
+            <WrappedBar />,
             {
                 blockName: 'foo',
                 blockModifiers: 'xyzzy plugh'
@@ -83,19 +84,23 @@ describe('BEM element decorator', () => {
         expect(mapPropsToModifiers).toBeCalledWith(
             {},
             {
-                xyzzy: 'xyzzy',
-                plugh: 'plugh'
+                xyzzy: true,
+                plugh: true
             }
         );
     });
 
     it('should fail in case of empty context', () => {
-        const WrappedFooBar = element('bar')(FooBar);
-        expect(() => renderer.render(<WrappedFooBar />)).toThrow(/^\[BEM\].+/);
+        const WrappedBar = element('bar')(Bar);
+        expect(() => renderer.render(<WrappedBar />)).toThrow(/^\[BEM\].+/);
     });
 
     it('should fail in case of invalid element name (not kebab-case)', () => {
         expect(() => element('BAR')).toThrow(/^\[BEM\].+/);
+    });
+
+    it('should fail in case of inconsistent component name', () => {
+        expect(() => element('baz')(Bar)).toThrow();
     });
 
     describe('which wraps a component with modular css', () => {
@@ -109,25 +114,25 @@ describe('BEM element decorator', () => {
         }
 
         it('should take a class mapping from the static field [styles]', () => {
-            FooBar.styles = {
+            Bar.styles = {
                 [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123',
                 [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: 'quux#456'
             };
-            const WrappedFooBar = element(
+            const WrappedBar = element(
                 'bar',
                 ({baz}) => `baz-${baz}`
-            )(FooBar);
-            renderer.render(<WrappedFooBar baz="quux" />, {blockName: 'foo'});
+            )(Bar);
+            renderer.render(<WrappedBar baz="quux" />, {blockName: 'foo'});
             checkClasses();
         });
 
         it('should take a class mapping from the context property [blockStyles]', () => {
-            const WrappedFooBar = element(
+            const WrappedBar = element(
                 'bar',
                 ({baz}) => `baz-${baz}`
-            )(FooBar);
+            )(Bar);
             renderer.render(
-                <WrappedFooBar baz="quux" />,
+                <WrappedBar baz="quux" />,
                 {
                     blockName: 'foo',
                     blockStyles: {
@@ -138,25 +143,36 @@ describe('BEM element decorator', () => {
             );
             checkClasses();
         });
+    });
 
-        it('should take a class mapping from the context property and from the static field', () => {
-            FooBar.styles = {
-                [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123'
-            };
-            const WrappedFooBar = element(
+    // Integration tests
+    describe('with separate modifier components', () => {
+        let BarXyzzy;
+        let BarPlugh;
+        beforeEach(() => {
+            renderer = new ReactShallowRenderer();
+            BarXyzzy = () => <div />;
+            BarPlugh = () => <div />;
+        });
+
+        it('should choose component according to modifier', () => {
+            const WrappedBar = element(
                 'bar',
-                ({baz}) => `baz-${baz}`
-            )(FooBar);
-            renderer.render(
-                <WrappedFooBar baz="quux" />,
-                {
-                    blockName: 'foo',
-                    blockStyles: {
-                        [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: 'quux#456'
-                    }
-                }
+                ({xyzzy, plugh}) => [{xyzzy}, `plugh-${plugh}`]
+            )(
+                Bar,
+                modifier('xyzzy')(BarXyzzy),
+                modifier(/^plugh-\w\w$/)(BarPlugh)
             );
-            checkClasses();
+            renderer.render(<WrappedBar />, {blockName: 'foo'});
+            let wrappedBar = renderer.getRenderOutput();
+            expect(wrappedBar.type).toBe(Bar);
+            renderer.render(<WrappedBar xyzzy />, {blockName: 'foo'});
+            wrappedBar = renderer.getRenderOutput();
+            expect(wrappedBar.type).toBe(BarXyzzy);
+            renderer.render(<WrappedBar plugh="xs" />, {blockName: 'foo'});
+            wrappedBar = renderer.getRenderOutput();
+            expect(wrappedBar.type).toBe(BarPlugh);
         });
     });
 });

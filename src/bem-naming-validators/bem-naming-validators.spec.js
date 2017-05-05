@@ -1,4 +1,5 @@
-import zip from 'lodash/zip';
+import camelCase from 'lodash/camelCase';
+import upperFirst from 'lodash/upperFirst';
 import {Config} from '../config';
 import {
     isValidNamePart, isValidComponentName,
@@ -10,6 +11,8 @@ Config.ASSERTION_ENABLED = true;
 describe('BEM naming validators', () => {
     const VALID_NAME_PARTS = ['foo', 'foo-bar', 'foo-bar-baz'];
     const EMPTY_VALUES = ['', null, undefined];
+    const WITH_INVALID_CASE = ['Foo', 'foO', 'boo-Bar', 'bar-Baz'];
+    const WITH_INVALID_SEPARATORS = ['foo_bar', 'foo__bar', 'boo--bar', 'bar.bar', 'bar,bar', 'bar!bar'];
 
     describe('isValidNamePart', () => {
         it('should treat hyphen separated names as valid BEM names', () => {
@@ -25,13 +28,13 @@ describe('BEM naming validators', () => {
         });
 
         it('should treat names with upper case letters as invalid BEM names', () => {
-            ['Foo', 'foO', 'boo-Bar', 'bar-Baz'].forEach((name) => {
+            WITH_INVALID_CASE.forEach((name) => {
                 expect(isValidNamePart(name)).toBeFalsy();
             });
         });
 
         it('should treat names with non hyphen separators as invalid BEM names', () => {
-            ['foo_bar', 'foo__bar', 'boo--bar', 'bar.bar', 'bar,bar', 'bar!bar'].forEach((name) => {
+            WITH_INVALID_SEPARATORS.forEach((name) => {
                 expect(isValidNamePart(name)).toBeFalsy();
             });
         });
@@ -44,24 +47,35 @@ describe('BEM naming validators', () => {
             });
         });
 
-        it('should fail in case of empty names', () => {
-            EMPTY_VALUES.forEach((name) => {
+        it('should fail in case of invalid or empty BEM names', () => {
+            [...WITH_INVALID_CASE, ...WITH_INVALID_SEPARATORS, ...EMPTY_VALUES].forEach((name) => {
                 expect(() => assertNamePart(name)).toThrow();
             });
         });
     });
 
     describe('isValidComponentName', () => {
-        it('should check component name (PascalCase or camelCase) against BEM name (kebab-case)', () => {
-            [['Foo', 'foo'], ['FooBar', 'foo-bar'], ['FooBarBaz', 'foo-bar-baz']].forEach(
+        it(`should check that component name (PascalCase or camelCase)
+            starts with corresponding BEM name (kebab-case)`, () => {
+            [['FooQuux', 'foo'], ['FooBarQuux', 'foo-bar'], ['FooBarBazQuux', 'foo-bar-baz']].forEach(
                 ([componentName, name]) => {
                     expect(isValidComponentName(componentName, name)).toBeTruthy();
                 }
             );
         });
-        it('should fail in case of empty names', () => {
-            [zip(EMPTY_VALUES, EMPTY_VALUES)].forEach(
-                ([componentName, name]) => {
+
+        it('should be truthy in case of empty component name (for components defined as arrow functions)', () => {
+            [...WITH_INVALID_CASE, ...WITH_INVALID_SEPARATORS, ...EMPTY_VALUES].forEach(
+                (name) => {
+                    expect(isValidComponentName('', name)).toBeTruthy();
+                }
+            );
+        });
+
+        it('should be falsy if invalid BEM name provided', () => {
+            [...WITH_INVALID_CASE, ...WITH_INVALID_SEPARATORS].forEach(
+                (name) => {
+                    const componentName = upperFirst(camelCase(name));
                     expect(isValidComponentName(componentName, name)).toBeFalsy();
                 }
             );

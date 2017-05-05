@@ -5,16 +5,20 @@ import classNames from 'classnames/bind';
 import {assertNamePart, assertComponentName} from '../bem-naming-validators';
 import {createBlockNameFactory} from '../bem-naming-factory';
 import {blockContextTypes} from './block-context-types';
+import {chooseModifierComponent, getDefaultComponent} from '../modifier';
 
-export function block(blockName, mapPropsToModifiers = noop) {
+export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
     assertNamePart(blockName);
     if (!isFunction(mapPropsToModifiers)) {
         throw new TypeError('[mapPropsToModifiers] should be a function');
     }
-    return (WrappedComponent) => {
-        assertComponentName(WrappedComponent.name, blockName);
-        WrappedComponent.displayName = blockName; // eslint-disable-line no-param-reassign
-        const cx = classNames.bind(WrappedComponent.styles || {});
+    return (...WrappedComponents) => {
+        WrappedComponents.forEach((Wrapped) => {
+            assertComponentName(Wrapped.name, blockName);
+            Wrapped.displayName = blockName; // eslint-disable-line no-param-reassign
+        });
+        const DefaultComponent = getDefaultComponent(WrappedComponents);
+        const cx = classNames.bind(DefaultComponent.styles || styles || {});
         return class Wrapper extends React.PureComponent {
             static displayName = `block(${blockName})`;
 
@@ -25,7 +29,7 @@ export function block(blockName, mapPropsToModifiers = noop) {
                 return {
                     blockName,
                     blockModifiers: classNames(modifiers),
-                    blockStyles: WrappedComponent.styles
+                    blockStyles: DefaultComponent.styles || styles
                 };
             }
 
@@ -38,7 +42,15 @@ export function block(blockName, mapPropsToModifiers = noop) {
                     modifiers && blockNameFactory(modifiers),
                     className
                 );
-                return <WrappedComponent {...this.props} blockClassName={blockClassName} />;
+                const TargetComponent = chooseModifierComponent(
+                    WrappedComponents,
+                    modifiers
+                );
+                return React.createElement(TargetComponent, {
+                    ...this.props,
+                    className: blockClassName,
+                    blockClassName
+                });
             }
         };
     };
