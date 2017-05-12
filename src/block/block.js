@@ -2,10 +2,13 @@ import React from 'react';
 import noop from 'lodash/noop';
 import isFunction from 'lodash/isFunction';
 import classNames from 'classnames/bind';
+import {Config} from '../config';
 import {assertNamePart, assertComponentName} from '../bem-naming-validators';
 import {createBlockNameFactory} from '../bem-naming-factory';
 import {blockContextTypes} from './block-context-types';
 import {chooseModifierComponent, getDefaultComponent} from '../modifier';
+
+const {COMPONENT_BASE_CLASS} = Config;
 
 export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
     assertNamePart(blockName);
@@ -19,7 +22,7 @@ export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
         });
         const DefaultComponent = getDefaultComponent(WrappedComponents);
         const cx = classNames.bind(DefaultComponent.styles || styles || {});
-        return class Wrapper extends React.PureComponent {
+        return class Wrapper extends COMPONENT_BASE_CLASS {
             static displayName = `block(${blockName})`;
 
             static childContextTypes = blockContextTypes;

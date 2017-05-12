@@ -3,10 +3,21 @@ import ReactShallowRenderer from 'react-test-renderer/shallow';
 import isString from 'lodash/isString';
 import {Config} from '../config';
 import {element} from './element';
-import {modifier} from '../modifier';
 
 Config.ASSERTION_ENABLED = true;
 const {ELEMENT_SEPARATOR, MODIFIER_SEPARATOR} = Config;
+
+jest.mock('../modifier', () => ({
+    chooseModifierComponent(Components = []) {
+        return Components[0];
+    },
+    getDefaultComponent(Components = []) {
+        return Components[0];
+    },
+    normalizeModifiers() {
+        return {xyzzy: true, plugh: true};
+    }
+}));
 
 describe('BEM element decorator', () => {
     let renderer;
@@ -142,37 +153,6 @@ describe('BEM element decorator', () => {
                 }
             );
             checkClasses();
-        });
-    });
-
-    // Integration tests
-    describe('with separate modifier components', () => {
-        let BarXyzzy;
-        let BarPlugh;
-        beforeEach(() => {
-            renderer = new ReactShallowRenderer();
-            BarXyzzy = () => <div />;
-            BarPlugh = () => <div />;
-        });
-
-        it('should choose component according to modifier', () => {
-            const WrappedBar = element(
-                'bar',
-                ({xyzzy, plugh}) => [{xyzzy}, `plugh-${plugh}`]
-            )(
-                Bar,
-                modifier('xyzzy')(BarXyzzy),
-                modifier(/^plugh-\w\w$/)(BarPlugh)
-            );
-            renderer.render(<WrappedBar />, {blockName: 'foo'});
-            let wrappedBar = renderer.getRenderOutput();
-            expect(wrappedBar.type).toBe(Bar);
-            renderer.render(<WrappedBar xyzzy />, {blockName: 'foo'});
-            wrappedBar = renderer.getRenderOutput();
-            expect(wrappedBar.type).toBe(BarXyzzy);
-            renderer.render(<WrappedBar plugh="xs" />, {blockName: 'foo'});
-            wrappedBar = renderer.getRenderOutput();
-            expect(wrappedBar.type).toBe(BarPlugh);
         });
     });
 });

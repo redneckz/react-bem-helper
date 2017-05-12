@@ -3,10 +3,18 @@ import ReactShallowRenderer from 'react-test-renderer/shallow';
 import isString from 'lodash/isString';
 import {Config} from '../config';
 import {block} from './block';
-import {modifier} from '../modifier';
 
 Config.ASSERTION_ENABLED = true;
 const {MODIFIER_SEPARATOR} = Config;
+
+jest.mock('../modifier', () => ({
+    chooseModifierComponent(Components = []) {
+        return Components[0];
+    },
+    getDefaultComponent(Components = []) {
+        return Components[0];
+    }
+}));
 
 describe('BEM block decorator', () => {
     let renderer;
@@ -96,36 +104,5 @@ describe('BEM block decorator', () => {
 
     it('should fail in case of inconsistent component name', () => {
         expect(() => block('bar')(Foo)).toThrow();
-    });
-
-    // Integration tests
-    describe('with separate modifier components', () => {
-        let FooXyzzy;
-        let FooPlugh;
-        beforeEach(() => {
-            renderer = new ReactShallowRenderer();
-            FooXyzzy = () => <div />;
-            FooPlugh = () => <div />;
-        });
-
-        it('should choose component according to modifier', () => {
-            const WrappedFoo = block(
-                'foo',
-                ({xyzzy, plugh}) => [{xyzzy}, `plugh-${plugh}`]
-            )(
-                Foo,
-                modifier('xyzzy')(FooXyzzy),
-                modifier(/^plugh-\w\w$/)(FooPlugh)
-            );
-            renderer.render(<WrappedFoo />);
-            let wrappedFoo = renderer.getRenderOutput();
-            expect(wrappedFoo.type).toBe(Foo);
-            renderer.render(<WrappedFoo xyzzy />);
-            wrappedFoo = renderer.getRenderOutput();
-            expect(wrappedFoo.type).toBe(FooXyzzy);
-            renderer.render(<WrappedFoo plugh="xs" />);
-            wrappedFoo = renderer.getRenderOutput();
-            expect(wrappedFoo.type).toBe(FooPlugh);
-        });
     });
 });
