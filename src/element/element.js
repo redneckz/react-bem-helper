@@ -16,7 +16,7 @@ export function element(elementName, mapPropsToModifiers = noop, {styles} = {}) 
         throw new TypeError('[mapPropsToModifiers] should be a function');
     }
     return (...WrappedComponents) => {
-        WrappedComponents.forEach((Wrapped) => {
+        WrappedComponents.filter(isFunction).forEach((Wrapped) => {
             assertComponentName(Wrapped.name, elementName);
             Wrapped.displayName = elementName; // eslint-disable-line no-param-reassign
         });
@@ -37,8 +37,7 @@ export function element(elementName, mapPropsToModifiers = noop, {styles} = {}) 
             );
             return React.createElement(TargetComponent, {
                 ...props,
-                className: elementClassName,
-                elementClassName
+                className: elementClassName
             });
         }
         Wrapper.displayName = `element(${elementName})`;

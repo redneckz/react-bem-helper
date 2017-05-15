@@ -32,34 +32,35 @@ describe('BEM element decorator', () => {
         expect(WrappedBar.displayName).toEqual('element(bar)');
     });
 
-    it('should inject [elementClassName] property with valid BEM name', () => {
+    it('should inject [className] property containing element full name', () => {
         const WrappedBar = element('bar')(Bar);
         renderer.render(<WrappedBar />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-        expect(wrappedFooBar.props.elementClassName).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
+        expect(isString(wrappedFooBar.props.className)).toBeTruthy();
+        expect(wrappedFooBar.props.className).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
     });
 
-    it('should mixin provided [className] property into [elementClassName] property', () => {
+    it(`should mixin provided [className] property (passed to decorator)
+        into resulting [className] property (injected to wrapped/underlying component)`, () => {
         const WrappedBar = element('bar')(Bar);
         renderer.render(<WrappedBar className="quux" />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-        const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
+        expect(isString(wrappedFooBar.props.className)).toBeTruthy();
+        const fooBarClasses = wrappedFooBar.props.className.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar`);
         expect(fooBarClasses).toContain('quux');
     });
 
-    it('should transduce properties to modifiers and mixin corresponding classes into [elementClassName]', () => {
+    it('should transduce properties to modifiers and mixin corresponding classes into [className]', () => {
         const WrappedBar = element(
             'bar',
-            ({baz}) => `baz-${baz}`
+            ({baz}) => `baz-${baz}` // transducer
         )(Bar);
         renderer.render(<WrappedBar baz="quux" />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-        const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
+        expect(isString(wrappedFooBar.props.className)).toBeTruthy();
+        const fooBarClasses = wrappedFooBar.props.className.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar`);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`);
@@ -72,8 +73,8 @@ describe('BEM element decorator', () => {
         )(Bar);
         renderer.render(<WrappedBar baz={false} />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-        const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
+        expect(isString(wrappedFooBar.props.className)).toBeTruthy();
+        const fooBarClasses = wrappedFooBar.props.className.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar`);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}not-baz`);
@@ -101,24 +102,11 @@ describe('BEM element decorator', () => {
         );
     });
 
-    it('should fail in case of empty context', () => {
-        const WrappedBar = element('bar')(Bar);
-        expect(() => renderer.render(<WrappedBar />)).toThrow(/^\[BEM\].+/);
-    });
-
-    it('should fail in case of invalid element name (not kebab-case)', () => {
-        expect(() => element('BAR')).toThrow(/^\[BEM\].+/);
-    });
-
-    it('should fail in case of inconsistent component name', () => {
-        expect(() => element('baz')(Bar)).toThrow();
-    });
-
     describe('which wraps a component with modular css', () => {
         function checkClasses() {
             const wrappedFooBar = renderer.getRenderOutput();
-            expect(isString(wrappedFooBar.props.elementClassName)).toBeTruthy();
-            const fooBarClasses = wrappedFooBar.props.elementClassName.split(' ');
+            expect(isString(wrappedFooBar.props.className)).toBeTruthy();
+            const fooBarClasses = wrappedFooBar.props.className.split(' ');
             expect(fooBarClasses).toHaveLength(2);
             expect(fooBarClasses).toContain('foo#123');
             expect(fooBarClasses).toContain('quux#456');
@@ -154,5 +142,26 @@ describe('BEM element decorator', () => {
             );
             checkClasses();
         });
+    });
+
+    it('should decorate components defined as tag name', () => {
+        const WrappedBar = element('bar')('div');
+        renderer.render(<WrappedBar />, {blockName: 'foo'});
+        const wrappedFooBar = renderer.getRenderOutput();
+        expect(wrappedFooBar.type).toEqual('div');
+        expect(wrappedFooBar.props.className).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
+    });
+
+    it('should fail in case of empty context', () => {
+        const WrappedBar = element('bar')(Bar);
+        expect(() => renderer.render(<WrappedBar />)).toThrow(/^\[BEM\].+/);
+    });
+
+    it('should fail in case of invalid element name (not kebab-case)', () => {
+        expect(() => element('BAR')).toThrow(/^\[BEM\].+/);
+    });
+
+    it('should fail in case of inconsistent component name', () => {
+        expect(() => element('baz')(Bar)).toThrow();
     });
 });
