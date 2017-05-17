@@ -2,7 +2,7 @@ import camelCase from 'lodash/camelCase';
 import upperFirst from 'lodash/upperFirst';
 import {Config} from '../config';
 import {
-    isValidNamePart, isValidComponentName,
+    isValidNamePart, isValidComponentName, isValidModifierComponentName,
     assertNamePart
 } from './bem-naming-validators';
 
@@ -40,26 +40,17 @@ describe('BEM naming validators', () => {
         });
     });
 
-    describe('assertNamePart', () => {
-        it('should be silent in case of valid BEM names', () => {
-            VALID_NAME_PARTS.forEach((name) => {
-                expect(() => assertNamePart(name)).not.toThrow();
-            });
-        });
-
-        it('should fail in case of invalid or empty BEM names', () => {
-            [...WITH_INVALID_CASE, ...WITH_INVALID_SEPARATORS, ...EMPTY_VALUES].forEach((name) => {
-                expect(() => assertNamePart(name)).toThrow();
-            });
-        });
-    });
-
     describe('isValidComponentName', () => {
         it(`should check that component name (PascalCase or camelCase)
-            starts with corresponding BEM name (kebab-case)`, () => {
-            [['FooQuux', 'foo'], ['FooBarQuux', 'foo-bar'], ['FooBarBazQuux', 'foo-bar-baz']].forEach(
+            equals to corresponding BEM name (kebab-case)`, () => {
+            [['Foo', 'foo'], ['FooBar', 'foo-bar'], ['FooBarBaz', 'foo-bar-baz']].forEach(
                 ([componentName, name]) => {
                     expect(isValidComponentName(componentName, name)).toBeTruthy();
+                }
+            );
+            [['FooQuux', 'foo'], ['FooBarQuux', 'foo-bar'], ['FooBarBazQuux', 'foo-bar-baz']].forEach(
+                ([componentName, name]) => {
+                    expect(isValidComponentName(componentName, name)).toBeFalsy();
                 }
             );
         });
@@ -79,6 +70,53 @@ describe('BEM naming validators', () => {
                     expect(isValidComponentName(componentName, name)).toBeFalsy();
                 }
             );
+        });
+    });
+
+    describe('isValidModifierComponentName', () => {
+        it(`should check that component name (PascalCase or camelCase)
+            starts with corresponding BEM name (kebab-case)`, () => {
+            [['FooQuux', 'foo'], ['FooBarQuux', 'foo-bar'], ['FooBarBazQuux', 'foo-bar-baz']].forEach(
+                ([componentName, name]) => {
+                    expect(isValidModifierComponentName(componentName, name)).toBeTruthy();
+                }
+            );
+            [['Foo', 'xyzzy'], ['FooBar', 'xyzzy-bar'], ['FooBarBaz', 'xyzzy-bar-baz']].forEach(
+                ([componentName, name]) => {
+                    expect(isValidModifierComponentName(componentName, name)).toBeFalsy();
+                }
+            );
+        });
+
+        it('should be truthy in case of empty component name (for components defined as arrow functions)', () => {
+            [...WITH_INVALID_CASE, ...WITH_INVALID_SEPARATORS, ...EMPTY_VALUES].forEach(
+                (name) => {
+                    expect(isValidModifierComponentName('', name)).toBeTruthy();
+                }
+            );
+        });
+
+        it('should be falsy if invalid BEM name provided', () => {
+            [...WITH_INVALID_CASE, ...WITH_INVALID_SEPARATORS].forEach(
+                (name) => {
+                    const componentName = upperFirst(camelCase(name));
+                    expect(isValidModifierComponentName(componentName, name)).toBeFalsy();
+                }
+            );
+        });
+    });
+
+    describe('assertNamePart', () => {
+        it('should be silent in case of valid BEM names', () => {
+            VALID_NAME_PARTS.forEach((name) => {
+                expect(() => assertNamePart(name)).not.toThrow();
+            });
+        });
+
+        it('should fail in case of invalid or empty BEM names', () => {
+            [...WITH_INVALID_CASE, ...WITH_INVALID_SEPARATORS, ...EMPTY_VALUES].forEach((name) => {
+                expect(() => assertNamePart(name)).toThrow();
+            });
         });
     });
 });

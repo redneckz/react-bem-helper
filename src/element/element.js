@@ -2,7 +2,7 @@ import React from 'react';
 import noop from 'lodash/noop';
 import isFunction from 'lodash/isFunction';
 import classNames from 'classnames/bind';
-import {assertNamePart, assertComponentName} from '../bem-naming-validators';
+import {assertNamePart, assertComponentName, assertModifierComponentName} from '../bem-naming-validators';
 import {createElementNameFactory} from '../bem-naming-factory';
 import {blockContextTypes} from '../block';
 import {
@@ -17,10 +17,11 @@ export function element(elementName, mapPropsToModifiers = noop, {styles} = {}) 
     }
     return (...WrappedComponents) => {
         WrappedComponents.filter(isFunction).forEach((Wrapped) => {
-            assertComponentName(Wrapped.name, elementName);
+            assertModifierComponentName(Wrapped.name, elementName);
             Wrapped.displayName = elementName; // eslint-disable-line no-param-reassign
         });
         const DefaultComponent = getDefaultComponent(WrappedComponents);
+        assertComponentName(DefaultComponent.name, elementName);
         function Wrapper(props, {blockName, blockModifiers, blockStyles} = {}) {
             const {className} = props;
             const modifiers = mapPropsToModifiers(props, normalizeModifiers(blockModifiers));

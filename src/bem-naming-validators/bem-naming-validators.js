@@ -11,6 +11,11 @@ export function isValidNamePart(name) {
 
 export function isValidComponentName(componentName, name) {
     return !componentName ||
+        (isValidNamePart(name) && (componentName === upperFirst(camelCase(name))));
+}
+
+export function isValidModifierComponentName(componentName, name) {
+    return !componentName ||
         (isValidNamePart(name) && startsWith(componentName, upperFirst(camelCase(name))));
 }
 
@@ -22,4 +27,9 @@ export const assertNamePart = assertion(
 export const assertComponentName = assertion(
     isValidComponentName,
     'Invalid component name'
+);
+
+export const assertModifierComponentName = assertion(
+    isValidModifierComponentName,
+    'Invalid modifier component name'
 );

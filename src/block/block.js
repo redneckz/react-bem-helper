@@ -3,7 +3,7 @@ import noop from 'lodash/noop';
 import isFunction from 'lodash/isFunction';
 import classNames from 'classnames/bind';
 import {Config} from '../config';
-import {assertNamePart, assertComponentName} from '../bem-naming-validators';
+import {assertNamePart, assertComponentName, assertModifierComponentName} from '../bem-naming-validators';
 import {createBlockNameFactory} from '../bem-naming-factory';
 import {blockContextTypes} from './block-context-types';
 import {chooseModifierComponent, getDefaultComponent} from '../modifier';
@@ -17,10 +17,11 @@ export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
     }
     return (...WrappedComponents) => {
         WrappedComponents.filter(isFunction).forEach((Wrapped) => {
-            assertComponentName(Wrapped.name, blockName);
+            assertModifierComponentName(Wrapped.name, blockName);
             Wrapped.displayName = blockName; // eslint-disable-line no-param-reassign
         });
         const DefaultComponent = getDefaultComponent(WrappedComponents);
+        assertComponentName(DefaultComponent.name, blockName);
         const cx = classNames.bind(DefaultComponent.styles || styles || {});
         return class Wrapper extends COMPONENT_BASE_CLASS {
             static displayName = `block(${blockName})`;
