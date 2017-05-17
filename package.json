@@ -1,5 +1,5 @@
 {
-  "name": "react-bem-helper",
+  "name": "@redneckz/react-bem-helper",
   "version": "1.0.0",
   "author": "Alexander Alexandrov",
   "description": "BEM library for React",

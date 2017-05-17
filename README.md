@@ -9,7 +9,7 @@ BEM library for React
 ## Install
 
 ```bash
-npm i --save react-bem-helper
+npm install --save @redneckz/react-bem-helper
 ```
 
 ## Motivation
@@ -40,7 +40,7 @@ as *React* components
 
 ```jsx
 import React from 'react';
-import {block} from 'react-bem-helper';
+import {block} from '@redneckz/react-bem-helper';
 
 const SomeButton = block(
     'some-button',
@@ -63,7 +63,7 @@ will produce
 
 ```javascript
 import React from 'react';
-import {Config} from 'react-bem-helper';
+import {Config} from '@redneckz/react-bem-helper';
 
 Config.ELEMENT_SEPARATOR = '__';
 Config.MODIFIER_SEPARATOR = '--';
@@ -150,8 +150,8 @@ on [CodePen](http://codepen.io)
 
 [MIT](http://vjpr.mit-license.org)
 
-[npm-image]: https://img.shields.io/npm/v/live-xxx.svg
-[npm-url]: https://npmjs.org/package/live-xxx
+[npm-image]: https://badge.fury.io/js/%40redneckz%2Freact-bem-helper.svg
+[npm-url]: https://www.npmjs.com/package/%40redneckz%2Freact-bem-helper
 [travis-image]: https://travis-ci.org/redneckz/react-bem-helper.svg?branch=master
 [travis-url]: https://travis-ci.org/redneckz/react-bem-helper
 [coveralls-image]: https://coveralls.io/repos/github/redneckz/react-bem-helper/badge.svg?branch=master
