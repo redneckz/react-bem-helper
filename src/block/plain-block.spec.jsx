@@ -2,21 +2,12 @@ import React from 'react';
 import ReactShallowRenderer from 'react-test-renderer/shallow';
 import isString from 'lodash/isString';
 import {Config} from '../config';
-import {block} from './block';
+import {plainBlock} from './plain-block';
 
 Config.ASSERTION_ENABLED = true;
 const {MODIFIER_SEPARATOR} = Config;
 
-jest.mock('../modifier', () => ({
-    chooseModifierComponent(Components = []) {
-        return Components[0];
-    },
-    getDefaultComponent(Components = []) {
-        return Components[0];
-    }
-}));
-
-describe('BEM block decorator', () => {
+describe('BEM plain block decorator (without elements and modifier components)', () => {
     let renderer;
     let Foo;
     beforeEach(() => {
@@ -25,12 +16,12 @@ describe('BEM block decorator', () => {
     });
 
     it('should have [displayName] containing block name', () => {
-        const WrappedFoo = block('foo')(Foo);
+        const WrappedFoo = plainBlock('foo')(Foo);
         expect(WrappedFoo.displayName).toEqual('block(foo)');
     });
 
     it('should inject [className] property containing block name', () => {
-        const WrappedFoo = block('foo')(Foo);
+        const WrappedFoo = plainBlock('foo')(Foo);
         renderer.render(<WrappedFoo />);
         const wrappedFoo = renderer.getRenderOutput();
         expect(isString(wrappedFoo.props.className)).toBeTruthy();
@@ -39,7 +30,7 @@ describe('BEM block decorator', () => {
 
     it(`should mixin provided [className] property (passed to decorator)
         into resulting [className] property (injected to wrapped/underlying component)`, () => {
-        const WrappedFoo = block('foo')(Foo);
+        const WrappedFoo = plainBlock('foo')(Foo);
         renderer.render(<WrappedFoo className="quux" />);
         const wrappedFoo = renderer.getRenderOutput();
         expect(isString(wrappedFoo.props.className)).toBeTruthy();
@@ -50,7 +41,7 @@ describe('BEM block decorator', () => {
     });
 
     it('should transduce properties to modifiers and mixin corresponding classes to [className]', () => {
-        const WrappedFoo = block(
+        const WrappedFoo = plainBlock(
             'foo',
             ({bar}) => `bar-${bar}` // transducer
         )(Foo);
@@ -64,7 +55,7 @@ describe('BEM block decorator', () => {
     });
 
     it('should accept "classnames" compatible structures as modifiers', () => {
-        const WrappedFoo = block(
+        const WrappedFoo = plainBlock(
             'foo',
             ({bar, baz}) => ([
                 {notBar: !bar},
@@ -96,7 +87,7 @@ describe('BEM block decorator', () => {
                 foo: 'foo#123',
                 [`foo${MODIFIER_SEPARATOR}bar-quux`]: 'quux#456'
             };
-            const WrappedFoo = block(
+            const WrappedFoo = plainBlock(
                 'foo',
                 ({bar}) => `bar-${bar}`
             )(Foo);
@@ -109,7 +100,7 @@ describe('BEM block decorator', () => {
                 foo: 'foo#123',
                 [`foo${MODIFIER_SEPARATOR}bar-quux`]: 'quux#456'
             };
-            const WrappedFoo = block(
+            const WrappedFoo = plainBlock(
                 'foo',
                 ({bar}) => `bar-${bar}`,
                 {styles} // options
@@ -122,7 +113,7 @@ describe('BEM block decorator', () => {
             const styles = {
                 foo: 'foo#123'
             };
-            const WrappedFoo = block(
+            const WrappedFoo = plainBlock(
                 'foo',
                 {styles} // options
             )(Foo);
@@ -133,7 +124,7 @@ describe('BEM block decorator', () => {
     });
 
     it('should decorate components defined as tag name', () => {
-        const WrappedFoo = block('foo')('div');
+        const WrappedFoo = plainBlock('foo')('div');
         renderer.render(<WrappedFoo />);
         const wrappedFoo = renderer.getRenderOutput();
         expect(wrappedFoo.type).toEqual('div');
@@ -141,10 +132,10 @@ describe('BEM block decorator', () => {
     });
 
     it('should fail in case of invalid block name (not kebab-case)', () => {
-        expect(() => block('FOO')).toThrow();
+        expect(() => plainBlock('FOO')).toThrow();
     });
 
     it('should fail in case of inconsistent component name', () => {
-        expect(() => block('bar')(Foo)).toThrow();
+        expect(() => plainBlock('bar')(Foo)).toThrow();
     });
 });

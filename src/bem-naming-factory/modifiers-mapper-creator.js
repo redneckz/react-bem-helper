@@ -7,7 +7,7 @@ import kebabCase from 'lodash/kebabCase';
 import compact from 'lodash/compact';
 import {assertNamePart} from '../bem-naming-validators';
 import {Config} from '../config';
-import {assertion} from '../assertion';
+import {assertion} from '../utils';
 
 const typeAssertion = assertion('Modifier has inappropriate type');
 

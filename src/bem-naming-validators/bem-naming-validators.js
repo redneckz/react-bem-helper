@@ -2,7 +2,7 @@ import camelCase from 'lodash/camelCase';
 import upperFirst from 'lodash/upperFirst';
 import isString from 'lodash/isString';
 import startsWith from 'lodash/startsWith';
-import {assertion} from '../assertion';
+import {assertion} from '../utils';
 
 export function isValidNamePart(name) {
     return isString(name) && name.split('-')
@@ -25,11 +25,11 @@ export const assertNamePart = assertion(
 );
 
 export const assertComponentName = assertion(
-    isValidComponentName,
+    (component, name) => isValidComponentName(component.name, name),
     'Invalid component name'
 );
 
 export const assertModifierComponentName = assertion(
-    isValidModifierComponentName,
+    (component, name) => isValidModifierComponentName(component.name, name),
     'Invalid modifier component name'
 );

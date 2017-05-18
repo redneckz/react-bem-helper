@@ -142,6 +142,33 @@ describe('BEM element decorator', () => {
             );
             checkClasses();
         });
+
+        it('should take a class mapping from decorator third arg [options]', () => {
+            const styles = {
+                [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123',
+                [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: 'quux#456'
+            };
+            const WrappedBar = element(
+                'bar',
+                ({baz}) => `baz-${baz}`,
+                {styles} // options
+            )(Bar);
+            renderer.render(<WrappedBar baz="quux" />, {blockName: 'foo'});
+            checkClasses();
+        });
+
+        it('should take a class mapping from decorator second arg [options] (overloaded version)', () => {
+            const styles = {
+                [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123'
+            };
+            const WrappedBar = element(
+                'bar',
+                {styles} // options
+            )(Bar);
+            renderer.render(<WrappedBar />, {blockName: 'foo'});
+            const wrappedFooBar = renderer.getRenderOutput();
+            expect(wrappedFooBar.props.className).toEqual('foo#123');
+        });
     });
 
     it('should decorate components defined as tag name', () => {

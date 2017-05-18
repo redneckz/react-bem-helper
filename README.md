@@ -24,9 +24,9 @@ and ensuring compliance with the BEM naming convention (configurable).
 1. Decorators *\@block*, *\@element*, *\@modifier* to define *BEM* entities
 as *React* components
 2. *className* property computation according to active modifiers
-3. BEM naming convention assertion
+3. *BEM* naming convention assertion
 4. Component name assertion
-5. BEM mixins support
+5. *BEM mixins* support
 6. Modular CSS support
 7. Configurable
 
@@ -144,6 +144,50 @@ const PanelTitle = element(
 ```
 
 See the Pen [Block "panel" shares modifier "inverted" with its elements](https://codepen.io/redneckz/pen/vmrRvN)
+on [CodePen](http://codepen.io)
+
+### Block "some-button" with modular CSS
+
+```jsx
+import styles from './panel.scss';
+
+const SomeButton = block(
+    'some-button',
+     // Component props to block modifiers transducer
+    ({disabled}) => ({disabled}),
+    {styles} // Can be passed as second argument
+)('button');
+```
+
+Styles bound to block will be applied to its elements.
+
+### Block "some-button" with modifier component "some-button--icon"
+
+Some times it's useful to define separate JSX artifacts for particular modifiers.
+
+```jsx
+const SomeButton = block(
+    'some-button',
+    ({icon}) => ({icon})
+)(
+    'button', // default component (no modifiers applied)
+    modifier('icon')(({className, icon}) => (
+        <svg
+            className={className}
+            width={SIZE} height={SIZE}
+            viewBox={`0 0 ${SIZE} ${SIZE}`}
+        >
+            <Group><path d={icon} /></Group>
+        </svg>
+    ))
+);
+```
+
+```jsx
+const Group = element('group')('g');
+```
+
+See the Pen [Block "some-button" with modifier component "some-button--icon"](https://codepen.io/redneckz/pen/QvZzWE)
 on [CodePen](http://codepen.io)
 
 ## License
