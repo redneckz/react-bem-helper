@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.2] - 2017-05-24
+
+### Added
+
+- *tag* factory is extended with form tags (form, input, label, button, textarea)
+
+### Fixed
+
+- Issue #8 Support mixins
+
 ## [1.0.1] - 2017-05-19
 
 ### Added
@@ -30,3 +40,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 [Unreleased]: https://github.com/redneckz/react-bem-helper/compare/v1.0.1...HEAD
 [1.0.1]: https://github.com/redneckz/react-bem-helper/compare/v1.0.0...v1.0.1
+[1.0.2]: https://github.com/redneckz/react-bem-helper/compare/v1.0.1...v1.0.2
