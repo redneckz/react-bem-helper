@@ -6,20 +6,35 @@ BEM library for React
 [![Build Status][travis-image]][travis-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
 
-## Install
+# Table of Contents
+
+* [Install](#install)
+* [Motivation](#motivation)
+* [Features](#features)
+* [Prerequisites](#prerequisites)
+* [Usage](#usage)
+    * [Block with element](#block-with-element)
+    * [Block with enumerable modifier](#block-with-enumerable-modifier)
+    * [Block shares modifier across elements](#block-shares-modifier-across-elements)
+    * [Modular CSS](#modular-css)
+    * [Modifier component](#modifier-component)
+* [Configuration](#configuration)
+* [License](#license)
+
+# Install
 
 ```bash
 npm install --save @redneckz/react-bem-helper
 ```
 
-## Motivation
+# Motivation
 
 This library helps to declare *BEM* entities in terms of *React* components.
 Primarily it useful to organize interaction between *React* components
 and *style* artifacts (CSS, Less, Sass, ...) computing valid class names
 and ensuring compliance with the BEM naming convention (configurable).
 
-## Features
+# Features
 
 1. Decorators *\@block*, *\@element*, *\@modifier* to define *BEM* entities
 as *React* components
@@ -30,13 +45,13 @@ as *React* components
 6. Modular CSS support
 7. Configurable
 
-## Prerequisites
+# Prerequisites
 
 1. [BEM Methodology](https://en.bem.info/methodology/)
 2. [ECMAScript Decorators](https://github.com/wycats/javascript-decorators)
 3. [classnames](https://www.npmjs.com/package/classnames)
 
-## Usage
+# Usage
 
 ```jsx
 import React from 'react';
@@ -59,19 +74,40 @@ will produce
 <button class="some-button some-button--disabled" disabled>BEM</button>
 ```
 
-*BEM* naming convention can be configured
+This is *very similar* to
 
-```javascript
-import React from 'react';
-import {Config} from '@redneckz/react-bem-helper';
-
-Config.ELEMENT_SEPARATOR = '__';
-Config.MODIFIER_SEPARATOR = '--';
-Config.ASSERTION_ENABLED = process.env.NODE_ENV === 'development';
-Config.COMPONENT_BASE_CLASS = React.PureComponent;
+```jsx
+const SomeButton = block('some-button', ({disabled}) => ({disabled}))(
+    ({className, ...props}) => <button className={className} {...props} />
+);
 ```
 
-### Block "panel" with element "title"
+Or *even* more complicated
+
+```jsx
+@block('some-button', ({disabled}) => ({disabled}))
+class Panel extends React.PureComponent {
+    render() {
+        const {className, ...props} = this.props;
+        return <button className={className} {...props} />;
+    }
+}
+```
+
+And one *more* (button attributes are *whitelisted* in the following example)
+
+```jsx
+import React from 'react';
+import {block, button} from '@redneckz/react-bem-helper';
+
+const SomeButton = block('some-button', ({disabled}) => ({disabled}))(
+    button({disabled: false}) // Produces DOM component
+);
+```
+
+All of the above can be applied to *\@element*.
+
+## Block with element
 
 ```jsx
 @block('panel')
@@ -95,7 +131,7 @@ const PanelTitle = element('title')('div');
 See the Pen [Block "panel" with element "title"](https://codepen.io/redneckz/pen/pPrByW)
 on [CodePen](http://codepen.io)
 
-### Block "some-button" with enumerable modifier "size"
+## Block with enumerable modifier
 
 ```jsx
 @block(
@@ -121,7 +157,7 @@ class SomeButton extends React.PureComponent {
 See the Pen [Block "some-button" with enumerable modifier "size"](http://codepen.io/redneckz/pen/vmJMwX)
 on [CodePen](http://codepen.io)
 
-### Block "panel" shares modifier "inverted" with its elements
+## Block shares modifier across elements
 
 ```jsx
 const Panel = block(
@@ -146,7 +182,7 @@ const PanelTitle = element(
 See the Pen [Block "panel" shares modifier "inverted" with its elements](https://codepen.io/redneckz/pen/vmrRvN)
 on [CodePen](http://codepen.io)
 
-### Block "some-button" with modular CSS
+## Modular CSS
 
 ```jsx
 import styles from './panel.scss';
@@ -161,7 +197,7 @@ const SomeButton = block(
 
 Styles bound to block will be applied to its elements.
 
-### Block "some-button" with modifier component "some-button--icon"
+## Modifier component
 
 Some times it's useful to define separate JSX artifacts for particular modifiers.
 
@@ -190,7 +226,21 @@ const Group = element('group')('g');
 See the Pen [Block "some-button" with modifier component "some-button--icon"](https://codepen.io/redneckz/pen/QvZzWE)
 on [CodePen](http://codepen.io)
 
-## License
+## Configuration
+
+*BEM* naming convention can be configured
+
+```javascript
+import React from 'react';
+import {Config} from '@redneckz/react-bem-helper';
+
+Config.ELEMENT_SEPARATOR = '__';
+Config.MODIFIER_SEPARATOR = '--';
+Config.ASSERTION_ENABLED = process.env.NODE_ENV === 'development';
+Config.COMPONENT_BASE_CLASS = React.PureComponent;
+```
+
+# License
 
 [MIT](http://vjpr.mit-license.org)
 
