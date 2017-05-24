@@ -28,7 +28,7 @@ export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
         const DefaultComponent = getDefaultComponent(WrappedComponents);
         assertComponentName(DefaultComponent, blockName);
         const cx = classNames.bind(DefaultComponent.styles || styles || {});
-        return class Wrapper extends COMPONENT_BASE_CLASS {
+        return class BlockWrapper extends COMPONENT_BASE_CLASS {
             static displayName = `block(${blockName})`;
 
             static childContextTypes = blockContextTypes;
@@ -62,4 +62,8 @@ export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
             }
         };
     };
+}
+
+export function isBlockDefinition(Component) {
+    return Component && /^block\(.+\)$/.test(Component.displayName);
 }

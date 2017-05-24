@@ -29,7 +29,7 @@ export function plainBlock(blockName, mapPropsToModifiers = noop, {styles} = {})
             WrappedComponent.displayName = blockName; // eslint-disable-line no-param-reassign
         }
         const cx = classNames.bind(WrappedComponent.styles || styles || {});
-        function Wrapper(props) {
+        function BlockWrapper(props) {
             const {className} = props;
             const modifiers = mapPropsToModifiers(props);
             const blockNameFactory = createBlockNameFactory(blockName);
@@ -43,7 +43,7 @@ export function plainBlock(blockName, mapPropsToModifiers = noop, {styles} = {})
                 className: blockClassName
             });
         }
-        Wrapper.displayName = `block(${blockName})`;
-        return Wrapper;
+        BlockWrapper.displayName = `block(${blockName})`;
+        return BlockWrapper;
     };
 }
