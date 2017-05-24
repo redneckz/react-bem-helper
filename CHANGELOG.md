@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - *README* updated with new cases
 - Minor refactoring
 
-## [1.0.0] - 2017-05-17
+## 1.0.0 - 2017-05-17
 
 ### Added
 
