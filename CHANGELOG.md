@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/)
 and this project adheres to [Semantic Versioning](http://semver.org/).
 
+## [1.0.4] - 2017-05-30
+
+### Fixed
+
+- UMD builds (build:es)
+- *\@plainBlock* comments and documentation
+
+### Added
+
+- README extended with methodological section
+- *VersionEye* integration
+
+### Changed
+
+- Dev. dependencies updated
+
 ## [1.0.3] - 2017-05-26
 
 ### Added
@@ -52,3 +68,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [1.0.1]: https://github.com/redneckz/react-bem-helper/compare/v1.0.0...v1.0.1
 [1.0.2]: https://github.com/redneckz/react-bem-helper/compare/v1.0.1...v1.0.2
 [1.0.3]: https://github.com/redneckz/react-bem-helper/compare/v1.0.2...v1.0.3
+[1.0.4]: https://github.com/redneckz/react-bem-helper/compare/v1.0.3...v1.0.4
