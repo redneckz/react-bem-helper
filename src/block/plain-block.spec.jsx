@@ -7,7 +7,7 @@ import {plainBlock} from './plain-block';
 Config.ASSERTION_ENABLED = true;
 const {MODIFIER_SEPARATOR} = Config;
 
-describe('BEM plain block decorator (without elements and modifier components)', () => {
+describe('BEM plain block decorator', () => {
     let renderer;
     let Foo;
     beforeEach(() => {

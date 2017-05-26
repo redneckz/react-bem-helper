@@ -14,6 +14,7 @@ BEM library for React
 * [Prerequisites](#prerequisites)
 * [Usage](#usage)
     * [Block with element](#block-with-element)
+    * [Block with namespaced element](#block-with-namespaced-element)
     * [Block with enumerable modifier](#block-with-enumerable-modifier)
     * [Block shares modifier across elements](#block-shares-modifier-across-elements)
     * [Modular CSS](#modular-css)
@@ -130,6 +131,44 @@ const PanelTitle = element('title')('div');
 
 See the Pen [Block "panel" with element "title"](https://codepen.io/redneckz/pen/pPrByW)
 on [CodePen](http://codepen.io)
+
+## Block with namespaced element
+
+Both *\@block* and *\@plainBlock* decorators support so called namespaced *@element* decorator.
+
+> *\@plainBlock* is a simplified version of *\@block* decorator.
+>
+> Support of standalone *\@element* is disabled due to performance reasons
+> (see https://facebook.github.io/react/docs/context.html).
+> But its interface is very similar to *\@block*.
+> So it can be used as follows (with "renaming"):
+>
+> `import {plainBlock as block} from '@redneckz/react-bem-helper';`
+>
+> Use namespaced *\@element* instead of standalone *\@element*. For example:
+>
+> `const Foo = plainBlock('foo')('div');`
+>
+> `const Bar = Foo.element('bar')('div');`
+
+Following example uses *Panel* defined earlier
+
+```jsx
+const PanelTitle = Panel.element('title')('div');
+```
+
+Also such definitions are useful in complicated cases:
+
+```jsx
+const BlockA = block('block-a')(() => (
+    <BlockB>
+        <ElementA /> {/* ElementA is erroneously bound to BlockB */}
+        <ElementB /> {/* ElementB works just fine */}
+    </BlockB>
+));
+const ElementA = element('element-a')('div');
+const ElementB = BlockA.element('element-b')('div');
+```
 
 ## Block with enumerable modifier
 

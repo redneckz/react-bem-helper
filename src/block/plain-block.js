@@ -5,14 +5,19 @@ import isPlainObject from 'lodash/isPlainObject';
 import classNames from 'classnames/bind';
 import {assertNamePart, assertComponentName} from '../bem-naming-validators';
 import {createBlockNameFactory} from '../bem-naming-factory';
+import {blockMixin} from './block-mixin';
 
 /**
  * Simplified version of @block decorator.
- * Support of @element and @modifier is disabled
- * due to performance reasons (life cycle and context).
- * But interface is very similar to @block.
- * So you can use it with "renaming". For example:
+ * Support of standalone @element is disabled due to performance reasons
+ * (see https://facebook.github.io/react/docs/context.html).
+ * But its interface is very similar to @block.
+ * So it can be used as follows (with "renaming"):
  * import {plainBlock as block} from '@redneckz/react-bem-helper';
+ *
+ * Use namespaced @element instead of standalone @element. For example:
+ * const Foo = plainBlock('foo')('div');
+ * const Bar = Foo.element('bar')('div');
  */
 export function plainBlock(blockName, mapPropsToModifiers = noop, {styles} = {}) {
     if (isPlainObject(mapPropsToModifiers)) {
@@ -23,10 +28,13 @@ export function plainBlock(blockName, mapPropsToModifiers = noop, {styles} = {})
     if (!isFunction(mapPropsToModifiers)) {
         throw new TypeError('[mapPropsToModifiers] should be a function');
     }
+    const staticContext = {blockName, blockStyles: styles};
     return (WrappedComponent) => {
         if (isFunction(WrappedComponent)) {
             assertComponentName(WrappedComponent, blockName);
-            WrappedComponent.displayName = blockName; // eslint-disable-line no-param-reassign
+            blockMixin(staticContext, WrappedComponent);
+            // eslint-disable-next-line no-param-reassign
+            WrappedComponent.displayName = blockName;
         }
         const cx = classNames.bind(WrappedComponent.styles || styles || {});
         function BlockWrapper(props) {
@@ -44,6 +52,6 @@ export function plainBlock(blockName, mapPropsToModifiers = noop, {styles} = {})
             });
         }
         BlockWrapper.displayName = `block(${blockName})`;
-        return BlockWrapper;
+        return blockMixin(staticContext, BlockWrapper);
     };
 }

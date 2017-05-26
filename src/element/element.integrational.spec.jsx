@@ -6,6 +6,7 @@ import {element} from './element';
 import {modifier} from '../modifier';
 
 Config.ASSERTION_ENABLED = true;
+const {ELEMENT_SEPARATOR} = Config;
 
 describe('BEM element decorator', () => {
     let renderer;
@@ -13,6 +14,22 @@ describe('BEM element decorator', () => {
     beforeEach(() => {
         renderer = new ReactShallowRenderer();
         Bar = () => <div />;
+    });
+
+    it('should use block name from static context provided by BEM block', () => {
+        const Foo = block('foo')(() => <div />);
+        const WrappedBar = Foo.element('bar')(Bar);
+        renderer.render(<WrappedBar />, {blockName: 'quux'});
+        const wrappedFooBar = renderer.getRenderOutput();
+        expect(wrappedFooBar.props.className).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
+    });
+
+    it('should use block name from static context provided by BEM plain block', () => {
+        const Foo = plainBlock('foo')(() => <div />);
+        const WrappedBar = Foo.element('bar')(Bar);
+        renderer.render(<WrappedBar />, {blockName: 'quux'});
+        const wrappedFooBar = renderer.getRenderOutput();
+        expect(wrappedFooBar.props.className).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
     });
 
     describe('with separate modifier components', () => {
@@ -50,7 +67,7 @@ describe('BEM element decorator', () => {
             expect(() => element('bar')(OtherFoo)).not.toThrow();
         });
 
-        it('(defined as [@plainBlock]) should NOT fail with assertion error', () => {
+        it('(defined as plain block should NOT fail with assertion error', () => {
             const OtherFoo = plainBlock('other-foo')(() => <div />);
             expect(() => element('bar')(OtherFoo)).not.toThrow();
         });

@@ -6,7 +6,8 @@ import negate from 'lodash/negate';
 import classNames from 'classnames/bind';
 import {assertNamePart, assertComponentName, assertModifierComponentName} from '../bem-naming-validators';
 import {createElementNameFactory} from '../bem-naming-factory';
-import {blockContextTypes, isBlockDefinition} from '../block';
+import {blockContextTypes} from '../block/block-context-types';
+import {isBlockDefinition} from '../block/is-block-definition';
 import {
     chooseModifierComponent, getDefaultComponent,
     normalizeModifiers
@@ -21,21 +22,27 @@ export function element(elementName, mapPropsToModifiers = noop, {styles} = {}) 
     if (!isFunction(mapPropsToModifiers)) {
         throw new TypeError('[mapPropsToModifiers] should be a function');
     }
+    const staticContext = this || {}; // @block static context
     return (...WrappedComponents) => {
         // Don't assert DOM components (tag names) and BEM mixins
-        WrappedComponents.filter(isFunction).filter(negate(isMixin)).forEach((Wrapped) => {
+        WrappedComponents.filter(isFunction).filter(negate(isBlockDefinition)).forEach((Wrapped) => {
             assertModifierComponentName(Wrapped, elementName);
             Wrapped.displayName = elementName; // eslint-disable-line no-param-reassign
         });
         const DefaultComponent = getDefaultComponent(WrappedComponents);
-        if (!isMixin(DefaultComponent)) {
+        if (!isBlockDefinition(DefaultComponent)) {
             assertComponentName(DefaultComponent, elementName);
         }
         function ElementWrapper(props, {blockName, blockModifiers, blockStyles} = {}) {
             const {className} = props;
             const modifiers = mapPropsToModifiers(props, normalizeModifiers(blockModifiers));
-            const cx = classNames.bind(DefaultComponent.styles || styles || blockStyles || {});
-            const elementNameFactory = createElementNameFactory(blockName, elementName);
+            const cx = classNames.bind(
+                DefaultComponent.styles || styles || (blockStyles || staticContext.blockStyles) || {}
+            );
+            const elementNameFactory = createElementNameFactory(
+                blockName || staticContext.blockName,
+                elementName
+            );
             const elementClassName = cx(
                 elementNameFactory(),
                 modifiers && elementNameFactory(modifiers),
@@ -51,7 +58,9 @@ export function element(elementName, mapPropsToModifiers = noop, {styles} = {}) 
             });
         }
         ElementWrapper.displayName = `element(${elementName})`;
-        ElementWrapper.contextTypes = blockContextTypes;
+        if (!staticContext.blockName) {
+            ElementWrapper.contextTypes = blockContextTypes;
+        }
         return ElementWrapper;
     };
 }
@@ -65,8 +74,4 @@ export function transparent(mapPropsToModifiers = noop) {
         mapPropsToModifiers(props),
         blockModifiers
     ];
-}
-
-function isMixin(WrappedComponent) {
-    return isBlockDefinition(WrappedComponent);
 }

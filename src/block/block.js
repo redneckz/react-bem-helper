@@ -8,6 +8,7 @@ import {assertNamePart, assertComponentName, assertModifierComponentName} from '
 import {createBlockNameFactory} from '../bem-naming-factory';
 import {blockContextTypes} from './block-context-types';
 import {chooseModifierComponent, getDefaultComponent} from '../modifier';
+import {blockMixin} from './block-mixin';
 
 const {COMPONENT_BASE_CLASS} = Config;
 
@@ -20,15 +21,18 @@ export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
     if (!isFunction(mapPropsToModifiers)) {
         throw new TypeError('[mapPropsToModifiers] should be a function');
     }
+    const staticContext = {blockName, blockStyles: styles};
     return (...WrappedComponents) => {
         WrappedComponents.filter(isFunction).forEach((Wrapped) => {
             assertModifierComponentName(Wrapped, blockName);
-            Wrapped.displayName = blockName; // eslint-disable-line no-param-reassign
+            blockMixin(staticContext, Wrapped);
+            // eslint-disable-next-line no-param-reassign
+            Wrapped.displayName = blockName;
         });
         const DefaultComponent = getDefaultComponent(WrappedComponents);
         assertComponentName(DefaultComponent, blockName);
         const cx = classNames.bind(DefaultComponent.styles || styles || {});
-        return class BlockWrapper extends COMPONENT_BASE_CLASS {
+        return blockMixin(staticContext, class BlockWrapper extends COMPONENT_BASE_CLASS {
             static displayName = `block(${blockName})`;
 
             static childContextTypes = blockContextTypes;
@@ -60,10 +64,6 @@ export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
                     className: blockClassName
                 });
             }
-        };
+        });
     };
-}
-
-export function isBlockDefinition(Component) {
-    return Component && /^block\(.+\)$/.test(Component.displayName);
 }
