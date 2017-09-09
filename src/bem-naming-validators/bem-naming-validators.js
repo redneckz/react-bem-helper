@@ -6,7 +6,7 @@ import {assertion} from '../utils';
 
 export function isValidNamePart(name) {
     return isString(name) && name.split('-')
-            .every(word => /^[a-z][a-z0-9]*$/.test(word));
+        .every(word => /^[a-z][a-z0-9]*$/.test(word));
 }
 
 export function isValidComponentName(componentName, name) {

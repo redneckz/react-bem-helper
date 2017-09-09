@@ -37,8 +37,8 @@ describe('BEM block decorator', () => {
         expect(wrappedFoo.props.className).toEqual('foo');
     });
 
-    it(`should mixin provided [className] property (passed to decorator)
-        into resulting [className] property (injected to wrapped/underlying component)`, () => {
+    it('should mixin provided [className] property (passed to decorator) into resulting [className] ' +
+            'property (injected to wrapped/underlying component)', () => {
         const WrappedFoo = block('foo')(Foo);
         renderer.render(<WrappedFoo className="quux" />);
         const wrappedFoo = renderer.getRenderOutput();

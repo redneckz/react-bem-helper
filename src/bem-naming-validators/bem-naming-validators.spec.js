@@ -41,13 +41,13 @@ describe('BEM naming validators', () => {
     });
 
     describe('isValidComponentName', () => {
-        it(`should check that component name (PascalCase or camelCase)
-            equals to corresponding BEM name (kebab-case)`, () => {
-            [['Foo', 'foo'], ['FooBar', 'foo-bar'], ['FooBarBaz', 'foo-bar-baz']].forEach(
-                ([componentName, name]) => {
-                    expect(isValidComponentName(componentName, name)).toBeTruthy();
-                }
-            );
+        it('should check that component name equals to corresponding BEM name (kebab-case)', () => {
+            [['Foo', 'foo'], ['FooBar', 'foo-bar'], ['FooBarBaz', 'foo-bar-baz']]
+                .forEach(
+                    ([componentName, name]) => {
+                        expect(isValidComponentName(componentName, name)).toBeTruthy();
+                    }
+                );
             [['FooQuux', 'foo'], ['FooBarQuux', 'foo-bar'], ['FooBarBazQuux', 'foo-bar-baz']].forEach(
                 ([componentName, name]) => {
                     expect(isValidComponentName(componentName, name)).toBeFalsy();
@@ -74,8 +74,7 @@ describe('BEM naming validators', () => {
     });
 
     describe('isValidModifierComponentName', () => {
-        it(`should check that component name (PascalCase or camelCase)
-            starts with corresponding BEM name (kebab-case)`, () => {
+        it('should check that component name starts with corresponding BEM name (kebab-case)', () => {
             [['FooQuux', 'foo'], ['FooBarQuux', 'foo-bar'], ['FooBarBazQuux', 'foo-bar-baz']].forEach(
                 ([componentName, name]) => {
                     expect(isValidModifierComponentName(componentName, name)).toBeTruthy();

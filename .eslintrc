@@ -40,6 +40,7 @@
         "react/jsx-indent": ["error", 4],
         "react/jsx-indent-props": ["error", 4],
         "react/prop-types": ["off"],
-        "react/prefer-stateless-function": ["off", {"ignorePureComponents": true}]
+        "react/prefer-stateless-function": ["off", {"ignorePureComponents": true}],
+        "jsx-a11y/href-no-hash": "off"
     }
 }
