@@ -1,2 +1,2 @@
-export * from './block';
-export * from './plain-block';
+export {block} from './block';
+export {plainBlock} from './plain-block';

@@ -7,7 +7,7 @@ const {MODIFIER_SEPARATOR} = Config;
 const INVALID_STRING_MODIFIERS = [' ', '*--*', 'кирилица', '4-start-with-digit'];
 const MODIFIERS_WITH_INAPPROPRIATE_TYPE = [22, true, null, /.*/, new Date(), NaN, () => {}, Symbol('symbol')];
 
-describe('function which is created by createModifiersMapper(_name_) ', () => {
+describe('function which is created by createModifiersMapper([name]) ', () => {
     let modifiersMapper;
     beforeEach(() => {
         modifiersMapper = createModifiersMapper('foo');
@@ -35,11 +35,11 @@ describe('function which is created by createModifiersMapper(_name_) ', () => {
             .toEqual([`foo${MODIFIER_SEPARATOR}baz`]);
     });
 
-    it('should return _name_ if modifier is undefined', () => {
+    it('should return [name] if modifier is undefined', () => {
         expect(modifiersMapper()).toEqual('foo');
     });
 
-    it('should return _name_ if modifier is an empty string', () => {
+    it('should return [name] if modifier is an empty string', () => {
         expect(modifiersMapper('')).toEqual('foo');
     });
 
@@ -50,5 +50,15 @@ describe('function which is created by createModifiersMapper(_name_) ', () => {
     it('should fail in case of the modifier has inappropriate type', () => {
         MODIFIERS_WITH_INAPPROPRIATE_TYPE.forEach(modifier => expect(() => modifiersMapper(modifier)).toThrow());
     });
-});
 
+    it('should transform modfiers to kebab-case', () => {
+        expect(modifiersMapper('bazBarQuux')).toEqual(`foo${MODIFIER_SEPARATOR}baz-bar-quux`);
+    });
+
+    it('should work correctly if modifier contains digits', () => {
+        expect(modifiersMapper(['md4', 'mdOffset2'])).toEqual([
+            `foo${MODIFIER_SEPARATOR}md4`,
+            `foo${MODIFIER_SEPARATOR}md-offset2`
+        ]);
+    });
+});

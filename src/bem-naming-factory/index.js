@@ -1,1 +1,1 @@
-export * from './bem-naming-factory';
+export {createBlockNameFactory, createElementNameFactory} from './bem-naming-factory';

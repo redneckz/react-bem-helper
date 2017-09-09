@@ -1,1 +1,1 @@
-export * from './element';
+export {element, transparent} from './element';

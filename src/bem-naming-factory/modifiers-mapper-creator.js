@@ -16,7 +16,7 @@ export function createModifiersMapper(name) {
         if (isUndefined(modifier) || modifier === '') {
             return name;
         } else if (isString(modifier)) {
-            const adjustedModifier = kebabCase(modifier);
+            const adjustedModifier = toKebabCase(modifier);
             assertNamePart(adjustedModifier);
             return `${name}${Config.MODIFIER_SEPARATOR}${adjustedModifier}`;
         } else if (isPlainObject(modifier)) {
@@ -26,4 +26,9 @@ export function createModifiersMapper(name) {
         }
         typeAssertion({name, modifier});
     };
+}
+
+function toKebabCase(modifier) {
+    return kebabCase(modifier)
+        .replace(/-(\d)/g, '$1'); // name part should not start with digit
 }

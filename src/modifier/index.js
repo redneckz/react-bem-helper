@@ -1,3 +1,3 @@
-export * from './modifier';
-export * from './modifier-component-chooser';
-export * from './modifiers-normalizer';
+export {modifier} from './modifier';
+export {chooseModifierComponent, getDefaultComponent} from './modifier-component-chooser';
+export {normalizeModifiers} from './modifiers-normalizer';

@@ -45,10 +45,7 @@ export function plainBlock(blockName, mapPropsToModifiers = noop, {styles} = {})
     const staticContext = {blockName, blockStyles: styles};
     return (WrappedComponent) => {
         if (isFunction(WrappedComponent)) {
-            assertComponentName(WrappedComponent, blockName);
-            blockMixin(staticContext, WrappedComponent);
-            // eslint-disable-next-line no-param-reassign
-            WrappedComponent.displayName = blockName;
+            prepareWrappedComponent(blockName, staticContext)(WrappedComponent);
         }
         const cx = classNames.bind(WrappedComponent.styles || styles || {});
         function BlockWrapper(props) {
@@ -67,5 +64,14 @@ export function plainBlock(blockName, mapPropsToModifiers = noop, {styles} = {})
         }
         BlockWrapper.displayName = `block(${blockName})`;
         return blockMixin(staticContext, BlockWrapper);
+    };
+}
+
+function prepareWrappedComponent(blockName, staticContext) {
+    return (Wrapped) => {
+        assertComponentName(Wrapped, blockName);
+        blockMixin(staticContext, Wrapped);
+        // eslint-disable-next-line no-param-reassign
+        Wrapped.displayName = blockName;
     };
 }

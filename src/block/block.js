@@ -23,12 +23,9 @@ export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
     }
     const staticContext = {blockName, blockStyles: styles};
     return (...WrappedComponents) => {
-        WrappedComponents.filter(isFunction).forEach((Wrapped) => {
-            assertModifierComponentName(Wrapped, blockName);
-            blockMixin(staticContext, Wrapped);
-            // eslint-disable-next-line no-param-reassign
-            Wrapped.displayName = blockName;
-        });
+        WrappedComponents
+            .filter(isFunction)
+            .forEach(prepareWrappedComponent(blockName, staticContext));
         const DefaultComponent = getDefaultComponent(WrappedComponents);
         assertComponentName(DefaultComponent, blockName);
         const cx = classNames.bind(DefaultComponent.styles || styles || {});
@@ -65,5 +62,14 @@ export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
                 });
             }
         });
+    };
+}
+
+function prepareWrappedComponent(blockName, staticContext) {
+    return (Wrapped) => {
+        assertModifierComponentName(Wrapped, blockName);
+        blockMixin(staticContext, Wrapped);
+        // eslint-disable-next-line no-param-reassign
+        Wrapped.displayName = blockName;
     };
 }
