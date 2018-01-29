@@ -34,10 +34,12 @@ export function element(elementName, mapPropsToModifiers = noop, {styles} = {}) 
             const {className} = props;
             const modifiers = mapPropsToModifiers(props, normalizeModifiers(blockModifiers));
             const cx = classNames.bind(
-                DefaultComponent.styles || styles || (blockStyles || staticContext.blockStyles) || {}
+                DefaultComponent.styles || styles ||
+                (staticContext.blockStyles || blockStyles) ||
+                {}
             );
             const elementNameFactory = createElementNameFactory(
-                blockName || staticContext.blockName,
+                staticContext.blockName || blockName,
                 elementName
             );
             const elementClassName = cx(

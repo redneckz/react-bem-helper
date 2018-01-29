@@ -5,16 +5,18 @@ import {createElement} from 'react';
 import {disableAssertionOnTarget} from './assertion';
 
 /**
- * Since react@15.2.0 there is new mechanism for handling components unknown props.
+ * Since react@15.2.0 there is new mechanism for handling unknown props.
  * This factory function provides straighforward way to define React DOM component
- * with restricted list of attributes
+ * with restricted list of attributes (whitelist)
  *
  * @param {string} tagName
  * @param {Object} [attrs = {}] plain object with allowed attributes and their default values
  * @returns {React.Component} DOM component
  */
 export function tag(tagName, attrs = {}) {
-    function Tag({key, className, children, ...props}) {
+    function Tag({
+        key, className, children, ...props
+    }) {
         return createElement(
             tagName,
             {
@@ -31,11 +33,9 @@ export function tag(tagName, attrs = {}) {
     return Tag;
 }
 
-// Meta tags
 export const div = attrs => tag('div', attrs);
 export const span = attrs => tag('span', attrs);
 
-// Form tags
 export const form = attrs => tag('form', attrs);
 export const button = attrs => tag('button', {
     type: 'button', onClick: noop, ...attrs
@@ -49,3 +49,13 @@ export const label = attrs => tag('label', {
 export const textarea = attrs => tag('textarea', {
     name: '', rows: 2, ...attrs
 });
+
+export const BEM = {
+    div,
+    span,
+    form,
+    button,
+    input,
+    label,
+    textarea
+};

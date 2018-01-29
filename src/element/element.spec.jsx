@@ -86,13 +86,10 @@ describe('BEM element decorator', () => {
             'bar',
             mapPropsToModifiers
         )(Bar);
-        renderer.render(
-            <WrappedBar />,
-            {
-                blockName: 'foo',
-                blockModifiers: 'xyzzy plugh'
-            }
-        );
+        renderer.render(<WrappedBar />, {
+            blockName: 'foo',
+            blockModifiers: 'xyzzy plugh'
+        });
         expect(mapPropsToModifiers).toBeCalledWith(
             {},
             {
@@ -130,16 +127,13 @@ describe('BEM element decorator', () => {
                 'bar',
                 ({baz}) => `baz-${baz}`
             )(Bar);
-            renderer.render(
-                <WrappedBar baz="quux" />,
-                {
-                    blockName: 'foo',
-                    blockStyles: {
-                        [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123',
-                        [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: 'quux#456'
-                    }
+            renderer.render(<WrappedBar baz="quux" />, {
+                blockName: 'foo',
+                blockStyles: {
+                    [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123',
+                    [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: 'quux#456'
                 }
-            );
+            });
             checkClasses();
         });
 

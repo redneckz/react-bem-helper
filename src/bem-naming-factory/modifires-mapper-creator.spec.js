@@ -44,11 +44,15 @@ describe('function which is created by createModifiersMapper([name]) ', () => {
     });
 
     it('should fail in case of the modifier is an invalid string ', () => {
-        INVALID_STRING_MODIFIERS.forEach(modifierStr => expect(() => modifiersMapper(modifierStr)).toThrow());
+        INVALID_STRING_MODIFIERS.forEach(
+            modifierStr => expect(() => modifiersMapper(modifierStr)).toThrow()
+        );
     });
 
     it('should fail in case of the modifier has inappropriate type', () => {
-        MODIFIERS_WITH_INAPPROPRIATE_TYPE.forEach(modifier => expect(() => modifiersMapper(modifier)).toThrow());
+        MODIFIERS_WITH_INAPPROPRIATE_TYPE.forEach(
+            modifier => expect(() => modifiersMapper(modifier)).toThrow()
+        );
     });
 
     it('should transform modfiers to kebab-case', () => {
