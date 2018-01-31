@@ -4,7 +4,7 @@
   "author": "Alexander Alexandrov",
   "description": "BEM library for React",
   "keywords": [
-    "bem",
+    "BEM",
     "react"
   ],
   "license": "MIT",
@@ -16,28 +16,32 @@
     "url": "https://github.com/redneckz/react-bem-helper/issues"
   },
   "homepage": "https://github.com/redneckz/react-bem-helper",
-  "main": "dist/index.js",
-  "module": "es/index.js",
-  "jsnext:main": "es/index.js",
+  "main": "lib/react-bem-helper.js",
+  "module": "es/react-bem-helper.js",
+  "browser": "dist/react-bem-helper.min.js",
+  "files": [
+    "src",
+    "lib",
+    "es",
+    "dist"
+  ],
   "peerDependencies": {
+    "prop-types": "^15.6.0",
     "react": "^0.14.0 || ^15.0.0-0 || ^16.0.0-0"
   },
   "dependencies": {
-    "classnames": "~2.2.5",
-    "lodash": "~4.17.2",
-    "prop-types": "~15.6.0"
+    "classnames": "^2.2.5",
+    "lodash": "^4.17.2"
   },
   "devDependencies": {
     "babel-cli": "~6.26.0",
     "babel-core": "~6.26.0",
     "babel-eslint": "~8.2.1",
     "babel-jest": "~22.1.0",
-    "babel-plugin-transform-class-properties": "~6.24.1",
-    "babel-plugin-transform-runtime": "~6.23.0",
-    "babel-preset-es2015": "~6.24.1",
+    "babel-plugin-external-helpers": "~6.22.0",
+    "babel-plugin-transform-object-rest-spread": "~6.26.0",
+    "babel-preset-env": "~1.6.1",
     "babel-preset-react": "~6.24.1",
-    "babel-preset-stage-0": "~6.24.1",
-    "browserify": "~15.2.0",
     "coveralls": "~3.0.0",
     "cross-env": "~5.1.3",
     "eslint": "~4.16.0",
@@ -46,23 +50,30 @@
     "eslint-plugin-jsx-a11y": "~6.0.2",
     "eslint-plugin-react": "~7.6.1",
     "jest-cli": "~22.1.4",
+    "prop-types": "~15.6.0",
     "react": "~16.2.0",
     "react-test-renderer": "~16.2.0",
-    "rimraf": "~2.6.1"
+    "rimraf": "~2.6.1",
+    "rollup": "~0.55.1",
+    "rollup-plugin-babel": "~3.0.3",
+    "rollup-plugin-commonjs": "~8.3.0",
+    "rollup-plugin-node-resolve": "~3.0.2",
+    "rollup-plugin-uglify": "~3.0.0"
   },
   "scripts": {
-    "prepublish": "npm run eslint && npm run jest && npm run build",
-    "bundle": "npm run build && browserify dist/index.js --standalone BEM | uglifyjs - -c --keep-fnames -o bundle.js",
-    "prebuild": "npm run clean",
-    "build": "cross-env-shell NODE_ENV=production \"npm run build:commonjs && npm run build:es\"",
-    "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --ignore *.spec.* --out-dir dist --source-maps",
-    "build:es": "cross-env BABEL_ENV=es babel src --ignore *.spec.* --out-dir es --source-maps",
-    "test": "npm run eslint && npm run jest && npm run coveralls",
+    "prepublish": "npm run build",
+    "prebuild": "npm run eslint && npm run jest && npm run clean",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
+    "build:commonjs": "cross-env NODE_ENV=cjs rollup -c -o lib/react-bem-helper.js",
+    "build:es": "cross-env NODE_ENV=es rollup -c -o es/react-bem-helper.js",
+    "build:umd": "cross-env NODE_ENV=development rollup -c -o dist/react-bem-helper.js",
+    "build:umd:min": "cross-env NODE_ENV=production rollup -c -o dist/react-bem-helper.min.js",
+    "clean": "rimraf lib es dist coverage",
+    "pretest": "npm run eslint",
+    "test": "npm run jest && npm run coveralls",
     "eslint": "eslint \"src/**/*.js\" \"src/**/*.jsx\" --cache --cache-location \"./.cache\"",
-    "jest": "jest",
-    "jest:watch": "jest --watch",
-    "coveralls": "coveralls < coverage/lcov.info",
-    "clean": "rimraf dist es"
+    "jest": "cross-env NODE_ENV=test jest",
+    "coveralls": "coveralls < coverage/lcov.info"
   },
   "jest": {
     "verbose": true,

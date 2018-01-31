@@ -1,7 +1,7 @@
 import pick from 'lodash/pick';
 import keys from 'lodash/keys';
 import noop from 'lodash/noop';
-import {createElement} from 'react';
+import React from 'react';
 import {disableAssertionOnTarget} from './assertion';
 
 /**
@@ -17,7 +17,7 @@ export function tag(tagName, attrs = {}) {
     function Tag({
         key, className, children, ...props
     }) {
-        return createElement(
+        return React.createElement(
             tagName,
             {
                 key,

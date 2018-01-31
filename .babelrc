@@ -1,27 +1,11 @@
 {
-    "env": {
-        "commonjs": {
-            "presets": [
-                ["es2015", {"modules": "commonjs"}],
-                "stage-0",
-                "react"
-            ]
-        },
-        "es": {
-            "presets": [
-                ["es2015", {"modules": "umd"}],
-                "stage-0",
-                "react"
-            ]
-        }
-    },
-    "presets": ["es2015", "stage-0", "react"],
-    "plugins": [
-        "transform-class-properties",
-        ["transform-runtime", {
-            "helpers": false,
-            "polyfill": false,
-            "regenerator": true
-        }],
-    ]
+  "env": {
+    "test": {
+      "presets": [
+        ["env", {"loose": true}],
+        "react"
+      ],
+      "plugins": ["transform-object-rest-spread"]
+    }
+  }
 }

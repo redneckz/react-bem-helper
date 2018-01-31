@@ -29,11 +29,7 @@ export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
         const DefaultComponent = getDefaultComponent(WrappedComponents);
         assertComponentName(DefaultComponent, blockName);
         const cx = classNames.bind(DefaultComponent.styles || styles || {});
-        return blockMixin(staticContext, class BlockWrapper extends COMPONENT_BASE_CLASS {
-            static displayName = `block(${blockName})`;
-
-            static childContextTypes = blockContextTypes;
-
+        const BlockWrapper = blockMixin(staticContext, class extends COMPONENT_BASE_CLASS {
             getChildContext() {
                 const modifiers = mapPropsToModifiers(this.props);
                 return {
@@ -62,6 +58,9 @@ export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
                 });
             }
         });
+        BlockWrapper.displayName = `block(${blockName})`;
+        BlockWrapper.childContextTypes = blockContextTypes;
+        return BlockWrapper;
     };
 }
 
