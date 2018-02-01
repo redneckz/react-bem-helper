@@ -1,5 +1,4 @@
 import kebabCase from 'lodash/kebabCase';
-import {assertNamePart} from '../bem-naming-validators';
 import {Config} from '../config';
 
 export function createModifiersMapper(name) {
@@ -8,7 +7,6 @@ export function createModifiersMapper(name) {
             return name;
         } else if (typeof modifier === 'string') {
             const adjustedModifier = toKebabCase(modifier);
-            assertNamePart(adjustedModifier);
             return `${name}${Config.MODIFIER_SEPARATOR}${adjustedModifier}`;
         } else if (Array.isArray(modifier)) {
             return modifier.filter(Boolean).map(mapModifier);

@@ -3,7 +3,6 @@ import ReactShallowRenderer from 'react-test-renderer/shallow';
 import {Config} from '../config';
 import {element} from './element';
 
-Config.ASSERTION_ENABLED = true;
 const {ELEMENT_SEPARATOR, MODIFIER_SEPARATOR} = Config;
 
 jest.mock('../modifier', () => ({
@@ -175,13 +174,5 @@ describe('BEM element decorator', () => {
     it('should fail in case of empty context', () => {
         const WrappedBar = element('bar')(Bar);
         expect(() => renderer.render(<WrappedBar />)).toThrow(/^\[BEM\].+/);
-    });
-
-    it('should fail in case of invalid element name (not kebab-case)', () => {
-        expect(() => element('BAR')).toThrow(/^\[BEM\].+/);
-    });
-
-    it('should fail in case of inconsistent component name', () => {
-        expect(() => element('baz')(Bar)).toThrow();
     });
 });

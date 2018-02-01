@@ -1,10 +1,7 @@
 import {createModifiersMapper} from './modifiers-mapper-creator';
 import {Config} from '../config';
 
-Config.ASSERTION_ENABLED = true;
-
 const {MODIFIER_SEPARATOR} = Config;
-const INVALID_STRING_MODIFIERS = [' ', '*--*', 'кирилица', '4-start-with-digit'];
 const MODIFIERS_WITH_INAPPROPRIATE_TYPE = [22, true, null, /.*/, new Date(), NaN, () => {}, Symbol('symbol')];
 
 describe('function which is created by createModifiersMapper([name]) ', () => {
@@ -41,12 +38,6 @@ describe('function which is created by createModifiersMapper([name]) ', () => {
 
     it('should return [name] if modifier is an empty string', () => {
         expect(modifiersMapper('')).toEqual('foo');
-    });
-
-    it('should fail in case of the modifier is an invalid string ', () => {
-        INVALID_STRING_MODIFIERS.forEach(
-            modifierStr => expect(() => modifiersMapper(modifierStr)).toThrow()
-        );
     });
 
     it('should fail in case of the modifier has inappropriate type', () => {

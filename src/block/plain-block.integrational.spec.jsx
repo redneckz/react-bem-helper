@@ -1,8 +1,5 @@
 import React from 'react';
-import {Config} from '../config';
 import {plainBlock} from './plain-block';
-
-Config.ASSERTION_ENABLED = true;
 
 describe('BEM plain block decorator', () => {
     let Foo;

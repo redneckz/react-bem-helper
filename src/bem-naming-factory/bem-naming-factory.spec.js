@@ -1,13 +1,9 @@
 import {createBlockNameFactory, createElementNameFactory} from './bem-naming-factory';
 import {Config} from '../config';
 
-Config.ASSERTION_ENABLED = true;
 const {ELEMENT_SEPARATOR, MODIFIER_SEPARATOR} = Config;
 
 describe('BEM naming factory', () => {
-    const INVALID_NAME_PARTS = ['Foo', 'fooBar', 'foo_bar', 'foo--bar', ' '];
-    const EMPTY_VALUES = ['', null, undefined];
-
     describe('createBlockNameFactory', () => {
         it('should return block name if empty modifier provided', () => {
             const fooBlockNameFactory = createBlockNameFactory('foo');
@@ -38,12 +34,6 @@ describe('BEM naming factory', () => {
                 [`foo-bar${MODIFIER_SEPARATOR}baz-quux`]: true
             });
         });
-
-        it('should fail in case of invalid block name', () => {
-            [...INVALID_NAME_PARTS, ...EMPTY_VALUES].forEach((block) => {
-                expect(() => createBlockNameFactory(block)).toThrow();
-            });
-        });
     });
 
     describe('createElementNameFactory', () => {
@@ -72,18 +62,6 @@ describe('BEM naming factory', () => {
                 bazQuux: true
             })).toEqual({
                 [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: true
-            });
-        });
-
-        it('should fail in case of invalid block name', () => {
-            [...INVALID_NAME_PARTS, ...EMPTY_VALUES].forEach((block) => {
-                expect(() => createElementNameFactory(block, 'foo')).toThrow();
-            });
-        });
-
-        it('should fail in case of invalid element name', () => {
-            [...INVALID_NAME_PARTS, ...EMPTY_VALUES].forEach((element) => {
-                expect(() => createElementNameFactory('foo', element)).toThrow();
             });
         });
     });

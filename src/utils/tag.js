@@ -1,5 +1,4 @@
 import React from 'react';
-import {disableAssertionOnTarget} from './assertion';
 
 /**
  * Since react@15.2.0 there is new mechanism for handling unknown props.
@@ -26,7 +25,6 @@ export function tag(tagName, attrs = {}) {
         );
     }
     Tag.displayName = `tag(${tagName})`;
-    disableAssertionOnTarget(Tag);
     return Tag;
 }
 

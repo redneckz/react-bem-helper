@@ -3,7 +3,6 @@ import ReactShallowRenderer from 'react-test-renderer/shallow';
 import {Config} from '../config';
 import {block} from './block';
 
-Config.ASSERTION_ENABLED = true;
 const {MODIFIER_SEPARATOR} = Config;
 
 jest.mock('../modifier', () => ({
@@ -137,13 +136,5 @@ describe('BEM block decorator', () => {
         const wrappedFoo = renderer.getRenderOutput();
         expect(wrappedFoo.type).toEqual('div');
         expect(wrappedFoo.props.className).toEqual('foo');
-    });
-
-    it('should fail in case of invalid block name (not kebab-case)', () => {
-        expect(() => block('FOO')).toThrow();
-    });
-
-    it('should fail in case of inconsistent component name', () => {
-        expect(() => block('bar')(Foo)).toThrow();
     });
 });

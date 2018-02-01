@@ -1,7 +1,6 @@
 import React from 'react';
 import classNames from 'classnames/bind';
 import {Config} from '../config';
-import {assertNamePart, assertComponentName, assertModifierComponentName} from '../bem-naming-validators';
 import {createBlockNameFactory} from '../bem-naming-factory';
 import {blockContextTypes} from './block-context-types';
 import {chooseModifierComponent, getDefaultComponent} from '../modifier';
@@ -20,7 +19,6 @@ export function block(blockName, mapPropsToModifiers = () => {}, options = {}) {
         // Alternative signature
         return block(blockName, undefined, mapPropsToModifiers);
     }
-    assertNamePart(blockName);
     const {styles} = options;
     const staticContext = {blockName, blockStyles: styles};
     return (...WrappedComponents) => {
@@ -28,7 +26,6 @@ export function block(blockName, mapPropsToModifiers = () => {}, options = {}) {
             .filter(Wrapped => Wrapped instanceof Function)
             .forEach(prepareWrappedComponent(blockName, staticContext));
         const DefaultComponent = getDefaultComponent(WrappedComponents);
-        assertComponentName(DefaultComponent, blockName);
         const cx = classNames.bind(DefaultComponent.styles || styles || {});
         const BlockWrapper = blockMixin(staticContext, class extends COMPONENT_BASE_CLASS {
             getChildContext() {
@@ -67,7 +64,6 @@ export function block(blockName, mapPropsToModifiers = () => {}, options = {}) {
 
 function prepareWrappedComponent(blockName, staticContext) {
     return (Wrapped) => {
-        assertModifierComponentName(Wrapped, blockName);
         blockMixin(staticContext, Wrapped);
         // eslint-disable-next-line no-param-reassign
         Wrapped.displayName = blockName;

@@ -42,11 +42,9 @@ and ensuring compliance with the BEM naming convention (configurable).
 1. Decorators *\@block*, *\@element*, *\@modifier* to define *BEM* entities
 as *React* components
 2. *className* property computation according to active modifiers
-3. *BEM* naming convention assertion
-4. Component name assertion
-5. *BEM mixins* support
-6. Modular CSS support
-7. Configurable
+3. *BEM mixins* support
+4. Modular CSS support
+5. Configurable
 
 # Prerequisites
 

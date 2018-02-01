@@ -1,9 +1,7 @@
 import React from 'react';
 import classNames from 'classnames/bind';
-import {assertNamePart, assertComponentName, assertModifierComponentName} from '../bem-naming-validators';
 import {createElementNameFactory} from '../bem-naming-factory';
 import {blockContextTypes} from '../block/block-context-types';
-import {isBEMComponent} from '../utils';
 import {
     chooseModifierComponent, getDefaultComponent,
     normalizeModifiers
@@ -20,7 +18,6 @@ export function element(elementName, mapPropsToModifiers = () => {}, options = {
         // Alternative signature
         return element(elementName, undefined, mapPropsToModifiers);
     }
-    assertNamePart(elementName);
     const {styles} = options;
     const staticContext = this || {}; // @block static context
     return (...WrappedComponents) => {
@@ -28,9 +25,6 @@ export function element(elementName, mapPropsToModifiers = () => {}, options = {
             .filter(Wrapped => Wrapped instanceof Function)
             .forEach(prepareWrappedComponent(elementName));
         const DefaultComponent = getDefaultComponent(WrappedComponents);
-        if (!isBEMComponent(DefaultComponent)) {
-            assertComponentName(DefaultComponent, elementName);
-        }
         function ElementWrapper(props, {blockName, blockModifiers, blockStyles} = {}) {
             const {className} = props;
             const modifiers = mapPropsToModifiers(props, normalizeModifiers(blockModifiers));
@@ -78,10 +72,6 @@ export function transparent(mapPropsToModifiers = () => {}) {
 
 function prepareWrappedComponent(elementName) {
     return (Wrapped) => {
-        // Don't assert DOM components (tag names) and BEM mixins
-        if (!isBEMComponent(Wrapped)) {
-            assertModifierComponentName(Wrapped, elementName);
-        }
         Wrapped.displayName = elementName; // eslint-disable-line no-param-reassign
     };
 }

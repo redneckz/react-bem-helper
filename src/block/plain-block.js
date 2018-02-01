@@ -1,6 +1,5 @@
 import React from 'react';
 import classNames from 'classnames/bind';
-import {assertNamePart, assertComponentName} from '../bem-naming-validators';
 import {createBlockNameFactory} from '../bem-naming-factory';
 import {blockMixin} from './block-mixin';
 
@@ -40,7 +39,6 @@ export function plainBlock(blockName, mapPropsToModifiers = () => {}, options = 
         // Alternative signature
         return plainBlock(blockName, undefined, mapPropsToModifiers);
     }
-    assertNamePart(blockName);
     const {styles} = options;
     const staticContext = {blockName, blockStyles: styles};
     return (WrappedComponent) => {
@@ -69,7 +67,6 @@ export function plainBlock(blockName, mapPropsToModifiers = () => {}, options = 
 
 function prepareWrappedComponent(blockName, staticContext) {
     return (Wrapped) => {
-        assertComponentName(Wrapped, blockName);
         blockMixin(staticContext, Wrapped);
         // eslint-disable-next-line no-param-reassign
         Wrapped.displayName = blockName;

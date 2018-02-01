@@ -5,7 +5,6 @@ import {block, plainBlock} from '../block';
 import {element} from './element';
 import {modifier} from '../modifier';
 
-Config.ASSERTION_ENABLED = true;
 const {ELEMENT_SEPARATOR} = Config;
 
 describe('BEM element decorator', () => {

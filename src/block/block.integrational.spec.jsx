@@ -1,10 +1,7 @@
 import React from 'react';
 import ReactShallowRenderer from 'react-test-renderer/shallow';
-import {Config} from '../config';
 import {block} from './block';
 import {modifier} from '../modifier';
-
-Config.ASSERTION_ENABLED = true;
 
 describe('BEM block decorator', () => {
     let Foo;

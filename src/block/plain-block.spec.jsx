@@ -3,7 +3,6 @@ import ReactShallowRenderer from 'react-test-renderer/shallow';
 import {Config} from '../config';
 import {plainBlock} from './plain-block';
 
-Config.ASSERTION_ENABLED = true;
 const {MODIFIER_SEPARATOR} = Config;
 
 describe('BEM plain block decorator', () => {
@@ -128,13 +127,5 @@ describe('BEM plain block decorator', () => {
         const wrappedFoo = renderer.getRenderOutput();
         expect(wrappedFoo.type).toEqual('div');
         expect(wrappedFoo.props.className).toEqual('foo');
-    });
-
-    it('should fail in case of invalid block name (not kebab-case)', () => {
-        expect(() => plainBlock('FOO')).toThrow();
-    });
-
-    it('should fail in case of inconsistent component name', () => {
-        expect(() => plainBlock('bar')(Foo)).toThrow();
     });
 });
