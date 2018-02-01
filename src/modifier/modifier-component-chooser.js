@@ -1,5 +1,4 @@
 import partition from 'lodash/partition';
-import find from 'lodash/find';
 import {normalizeModifiers} from './modifiers-normalizer';
 
 export function chooseModifierComponent(Components = [], mappedModifiers = {}) {
@@ -15,7 +14,8 @@ export function chooseModifierComponent(Components = [], mappedModifiers = {}) {
 }
 
 export function getDefaultComponent(Components = []) {
-    return find(Components, Component => !Component.modifierPredicates);
+    const [defaultComponent] = Components.filter(Component => !Component.modifierPredicates);
+    return defaultComponent;
 }
 
 function assertChosenComponents(chosenComponents, normalizedModifiers) {

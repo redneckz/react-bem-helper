@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactShallowRenderer from 'react-test-renderer/shallow';
-import isString from 'lodash/isString';
 import {Config} from '../config';
 import {element} from './element';
 
@@ -36,7 +35,7 @@ describe('BEM element decorator', () => {
         const WrappedBar = element('bar')(Bar);
         renderer.render(<WrappedBar />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.className)).toBeTruthy();
+        expect(wrappedFooBar.props.className).toBeDefined();
         expect(wrappedFooBar.props.className).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
     });
 
@@ -45,7 +44,7 @@ describe('BEM element decorator', () => {
         const WrappedBar = element('bar')(Bar);
         renderer.render(<WrappedBar className="quux" />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.className)).toBeTruthy();
+        expect(wrappedFooBar.props.className).toBeDefined();
         const fooBarClasses = wrappedFooBar.props.className.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar`);
@@ -59,7 +58,7 @@ describe('BEM element decorator', () => {
         )(Bar);
         renderer.render(<WrappedBar baz="quux" />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.className)).toBeTruthy();
+        expect(wrappedFooBar.props.className).toBeDefined();
         const fooBarClasses = wrappedFooBar.props.className.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar`);
@@ -73,7 +72,7 @@ describe('BEM element decorator', () => {
         )(Bar);
         renderer.render(<WrappedBar baz={false} />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(isString(wrappedFooBar.props.className)).toBeTruthy();
+        expect(wrappedFooBar.props.className).toBeDefined();
         const fooBarClasses = wrappedFooBar.props.className.split(' ');
         expect(fooBarClasses).toHaveLength(2);
         expect(fooBarClasses).toContain(`foo${ELEMENT_SEPARATOR}bar`);
@@ -102,7 +101,7 @@ describe('BEM element decorator', () => {
     describe('which wraps a component with modular css', () => {
         function checkClasses() {
             const wrappedFooBar = renderer.getRenderOutput();
-            expect(isString(wrappedFooBar.props.className)).toBeTruthy();
+            expect(wrappedFooBar.props.className).toBeDefined();
             const fooBarClasses = wrappedFooBar.props.className.split(' ');
             expect(fooBarClasses).toHaveLength(2);
             expect(fooBarClasses).toContain('foo#123');

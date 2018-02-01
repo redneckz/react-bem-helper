@@ -1,6 +1,3 @@
-import pick from 'lodash/pick';
-import keys from 'lodash/keys';
-import noop from 'lodash/noop';
 import React from 'react';
 import {disableAssertionOnTarget} from './assertion';
 
@@ -10,7 +7,7 @@ import {disableAssertionOnTarget} from './assertion';
  * with restricted list of attributes (whitelist)
  *
  * @param {string} tagName
- * @param {Object} [attrs = {}] plain object with allowed attributes and their default values
+ * @param {Object} [attrs] plain object with allowed attributes and their default values
  * @returns {React.Component} DOM component
  */
 export function tag(tagName, attrs = {}) {
@@ -23,7 +20,7 @@ export function tag(tagName, attrs = {}) {
                 key,
                 className,
                 ...attrs,
-                ...pick(props, keys(attrs))
+                ...pick(props, Object.keys(attrs))
             },
             children
         );
@@ -38,7 +35,7 @@ export const span = attrs => tag('span', attrs);
 
 export const form = attrs => tag('form', attrs);
 export const button = attrs => tag('button', {
-    type: 'button', onClick: noop, ...attrs
+    type: 'button', onClick: () => {}, ...attrs
 });
 export const input = attrs => tag('input', {
     type: 'text', name: '', value: '', ...attrs
@@ -59,3 +56,12 @@ export const BEM = {
     label,
     textarea
 };
+
+function pick(props, keysList) {
+    const filteredProps = keysList
+        .filter(key => key in props)
+        .map(key => ({
+            [key]: props[key]
+        }));
+    return Object.assign({}, ...filteredProps);
+}

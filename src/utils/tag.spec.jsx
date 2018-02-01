@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactShallowRenderer from 'react-test-renderer/shallow';
-import isFunction from 'lodash/isFunction';
 import {tag, div, span, form, button, input, label, textarea} from './tag';
 
 describe('[tag] factory function', () => {
@@ -10,7 +9,7 @@ describe('[tag] factory function', () => {
     });
 
     it('should return functional component', () => {
-        expect(isFunction(tag('foo'))).toBeTruthy();
+        expect(tag('foo')).toBeInstanceOf(Function);
     });
 
     it('should create DOM component with provided tag name', () => {
@@ -47,7 +46,7 @@ describe('[tag] factory function', () => {
 
     describe('[div]', () => {
         it('should return functional component', () => {
-            expect(isFunction(div())).toBeTruthy();
+            expect(div()).toBeInstanceOf(Function);
         });
 
         it('should produce "div"', () => {
@@ -59,7 +58,7 @@ describe('[tag] factory function', () => {
 
     describe('[span]', () => {
         it('should return functional component', () => {
-            expect(isFunction(span())).toBeTruthy();
+            expect(span()).toBeInstanceOf(Function);
         });
 
         it('should produce "span"', () => {
@@ -71,7 +70,7 @@ describe('[tag] factory function', () => {
 
     describe('[form]', () => {
         it('should return functional component', () => {
-            expect(isFunction(form())).toBeTruthy();
+            expect(form()).toBeInstanceOf(Function);
         });
 
         it('should produce "form"', () => {
@@ -83,7 +82,7 @@ describe('[tag] factory function', () => {
 
     describe('[button]', () => {
         it('should return functional component', () => {
-            expect(isFunction(button())).toBeTruthy();
+            expect(button()).toBeInstanceOf(Function);
         });
 
         it('should produce "button" with attribute "type" equal to "button" and attribute "onClick"', () => {
@@ -98,7 +97,7 @@ describe('[tag] factory function', () => {
 
     describe('[input]', () => {
         it('should return functional component', () => {
-            expect(isFunction(input())).toBeTruthy();
+            expect(input()).toBeInstanceOf(Function);
         });
 
         it('should produce "input" with attributes "type", "name", "value"', () => {
@@ -116,7 +115,7 @@ describe('[tag] factory function', () => {
 
     describe('[label]', () => {
         it('should return functional component', () => {
-            expect(isFunction(label())).toBeTruthy();
+            expect(label()).toBeInstanceOf(Function);
         });
 
         it('should produce "label" with "htmlFor" attribute', () => {
@@ -130,7 +129,7 @@ describe('[tag] factory function', () => {
 
     describe('[textarea]', () => {
         it('should return functional component', () => {
-            expect(isFunction(textarea())).toBeTruthy();
+            expect(textarea()).toBeInstanceOf(Function);
         });
 
         it('should produce "textarea" with empty "name" and "rows" attribute equal to 2 (HTML5 spec)', () => {

@@ -1,7 +1,4 @@
 import React from 'react';
-import noop from 'lodash/noop';
-import isFunction from 'lodash/isFunction';
-import isPlainObject from 'lodash/isPlainObject';
 import classNames from 'classnames/bind';
 import {assertNamePart, assertComponentName} from '../bem-naming-validators';
 import {createBlockNameFactory} from '../bem-naming-factory';
@@ -32,19 +29,22 @@ import {blockMixin} from './block-mixin';
  * const ElementB = BlockA.element('element-b')('div'); // namespaced @element
  *
  * ElementA is erroneously bound to BlockB. ElementB works just fine.
+ *
+ * @param {string} blockName
+ * @param {Props -> Modifiers} [mapPropsToModifiers]
+ * @param {{styles: string}} [options]
+ * @return {Component -> Component} decorator
  */
-export function plainBlock(blockName, mapPropsToModifiers = noop, {styles} = {}) {
-    if (isPlainObject(mapPropsToModifiers)) {
-        const options = mapPropsToModifiers;
-        return plainBlock(blockName, noop, options);
+export function plainBlock(blockName, mapPropsToModifiers = () => {}, options = {}) {
+    if (typeof mapPropsToModifiers === 'object') {
+        // Alternative signature
+        return plainBlock(blockName, undefined, mapPropsToModifiers);
     }
     assertNamePart(blockName);
-    if (!isFunction(mapPropsToModifiers)) {
-        throw new TypeError('[mapPropsToModifiers] should be a function');
-    }
+    const {styles} = options;
     const staticContext = {blockName, blockStyles: styles};
     return (WrappedComponent) => {
-        if (isFunction(WrappedComponent)) {
+        if (WrappedComponent instanceof Function) {
             prepareWrappedComponent(blockName, staticContext)(WrappedComponent);
         }
         const cx = classNames.bind(WrappedComponent.styles || styles || {});

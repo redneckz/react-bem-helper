@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactShallowRenderer from 'react-test-renderer/shallow';
-import isString from 'lodash/isString';
 import {Config} from '../config';
 import {block} from './block';
 
@@ -33,7 +32,7 @@ describe('BEM block decorator', () => {
         const WrappedFoo = block('foo')(Foo);
         renderer.render(<WrappedFoo />);
         const wrappedFoo = renderer.getRenderOutput();
-        expect(isString(wrappedFoo.props.className)).toBeTruthy();
+        expect(wrappedFoo.props.className).toBeDefined();
         expect(wrappedFoo.props.className).toEqual('foo');
     });
 
@@ -42,7 +41,7 @@ describe('BEM block decorator', () => {
         const WrappedFoo = block('foo')(Foo);
         renderer.render(<WrappedFoo className="quux" />);
         const wrappedFoo = renderer.getRenderOutput();
-        expect(isString(wrappedFoo.props.className)).toBeTruthy();
+        expect(wrappedFoo.props.className).toBeDefined();
         const fooClasses = wrappedFoo.props.className.split(' ');
         expect(fooClasses).toHaveLength(2);
         expect(fooClasses).toContain('foo');
@@ -56,7 +55,7 @@ describe('BEM block decorator', () => {
         )(Foo);
         renderer.render(<WrappedFoo bar="quux" />);
         const wrappedFoo = renderer.getRenderOutput();
-        expect(isString(wrappedFoo.props.className)).toBeTruthy();
+        expect(wrappedFoo.props.className).toBeDefined();
         const fooClasses = wrappedFoo.props.className.split(' ');
         expect(fooClasses).toHaveLength(2);
         expect(fooClasses).toContain('foo');
@@ -73,7 +72,7 @@ describe('BEM block decorator', () => {
         )(Foo);
         renderer.render(<WrappedFoo bar={false} baz="quxx" />);
         const wrappedFoo = renderer.getRenderOutput();
-        expect(isString(wrappedFoo.props.className)).toBeTruthy();
+        expect(wrappedFoo.props.className).toBeDefined();
         const fooClasses = wrappedFoo.props.className.split(' ');
         expect(fooClasses).toHaveLength(3);
         expect(fooClasses).toContain('foo');
@@ -84,7 +83,7 @@ describe('BEM block decorator', () => {
     describe('which wraps a component with modular css', () => {
         function checkClasses() {
             const wrappedFoo = renderer.getRenderOutput();
-            expect(isString(wrappedFoo.props.className)).toBeTruthy();
+            expect(wrappedFoo.props.className).toBeDefined();
             const fooClasses = wrappedFoo.props.className.split(' ');
             expect(fooClasses).toHaveLength(2);
             expect(fooClasses).toContain('foo#123');

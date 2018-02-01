@@ -1,7 +1,4 @@
 import React from 'react';
-import noop from 'lodash/noop';
-import isFunction from 'lodash/isFunction';
-import isPlainObject from 'lodash/isPlainObject';
 import classNames from 'classnames/bind';
 import {assertNamePart, assertComponentName, assertModifierComponentName} from '../bem-naming-validators';
 import {createElementNameFactory} from '../bem-naming-factory';
@@ -12,19 +9,23 @@ import {
     normalizeModifiers
 } from '../modifier';
 
-export function element(elementName, mapPropsToModifiers = noop, {styles} = {}) {
-    if (isPlainObject(mapPropsToModifiers)) {
-        const options = mapPropsToModifiers;
-        return element(elementName, noop, options);
+/**
+ * @param {string} elementName
+ * @param {Props -> Modifiers} [mapPropsToModifiers]
+ * @param {{styles: string}} [options]
+ * @return {Component -> Component} decorator to declare elements
+ */
+export function element(elementName, mapPropsToModifiers = () => {}, options = {}) {
+    if (typeof mapPropsToModifiers === 'object') {
+        // Alternative signature
+        return element(elementName, undefined, mapPropsToModifiers);
     }
     assertNamePart(elementName);
-    if (!isFunction(mapPropsToModifiers)) {
-        throw new TypeError('[mapPropsToModifiers] should be a function');
-    }
+    const {styles} = options;
     const staticContext = this || {}; // @block static context
     return (...WrappedComponents) => {
         WrappedComponents
-            .filter(isFunction)
+            .filter(Wrapped => Wrapped instanceof Function)
             .forEach(prepareWrappedComponent(elementName));
         const DefaultComponent = getDefaultComponent(WrappedComponents);
         if (!isBEMComponent(DefaultComponent)) {
@@ -68,7 +69,7 @@ export function element(elementName, mapPropsToModifiers = noop, {styles} = {}) 
  * Create props to modifiers transducer
  * transparently applying all block modifiers to element
  */
-export function transparent(mapPropsToModifiers = noop) {
+export function transparent(mapPropsToModifiers = () => {}) {
     return (props, blockModifiers) => [
         mapPropsToModifiers(props),
         blockModifiers

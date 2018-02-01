@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactShallowRenderer from 'react-test-renderer/shallow';
-import isFunction from 'lodash/isFunction';
 import {Config} from '../config';
 import {block} from './block';
 import {modifier} from '../modifier';
@@ -15,8 +14,8 @@ describe('BEM block decorator', () => {
 
     it('should provide "namespaced" BEM element decorator', () => {
         const WrappedFoo = block('foo')(Foo);
-        expect(isFunction(Foo.element)).toBeTruthy();
-        expect(isFunction(WrappedFoo.element)).toBeTruthy();
+        expect(Foo.element).toBeInstanceOf(Function);
+        expect(WrappedFoo.element).toBeInstanceOf(Function);
     });
 
     describe('with separate modifier components', () => {

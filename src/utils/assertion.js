@@ -1,10 +1,8 @@
-import isString from 'lodash/isString';
-import stubFalse from 'lodash/stubFalse';
 import {Config} from '../config';
 
 export function assertion(validator, message = 'Assertion error', enabled = isAssertableTarget) {
-    if (isString(validator)) {
-        return assertion(stubFalse, validator, enabled);
+    if (typeof validator === 'string') {
+        return assertion(() => false, validator, enabled);
     }
     return (target, ...args) => {
         const assertionEnabled = Config.ASSERTION_ENABLED && enabled(target, ...args);

@@ -1,5 +1,4 @@
 import React from 'react';
-import isFunction from 'lodash/isFunction';
 import {Config} from '../config';
 import {plainBlock} from './plain-block';
 
@@ -13,7 +12,7 @@ describe('BEM plain block decorator', () => {
 
     it('should provide "namespaced" BEM element decorator', () => {
         const WrappedFoo = plainBlock('foo')(Foo);
-        expect(isFunction(Foo.element)).toBeTruthy();
-        expect(isFunction(WrappedFoo.element)).toBeTruthy();
+        expect(Foo.element).toBeInstanceOf(Function);
+        expect(WrappedFoo.element).toBeInstanceOf(Function);
     });
 });

@@ -1,7 +1,4 @@
 import React from 'react';
-import noop from 'lodash/noop';
-import isFunction from 'lodash/isFunction';
-import isPlainObject from 'lodash/isPlainObject';
 import classNames from 'classnames/bind';
 import {Config} from '../config';
 import {assertNamePart, assertComponentName, assertModifierComponentName} from '../bem-naming-validators';
@@ -12,19 +9,23 @@ import {blockMixin} from './block-mixin';
 
 const {COMPONENT_BASE_CLASS} = Config;
 
-export function block(blockName, mapPropsToModifiers = noop, {styles} = {}) {
-    if (isPlainObject(mapPropsToModifiers)) {
-        const options = mapPropsToModifiers;
-        return block(blockName, noop, options);
+/**
+ * @param {string} blockName
+ * @param {Props -> Modifiers} [mapPropsToModifiers]
+ * @param {{styles: string}} [options]
+ * @return {Component -> Component} decorator to declare blocks
+ */
+export function block(blockName, mapPropsToModifiers = () => {}, options = {}) {
+    if (typeof mapPropsToModifiers === 'object') {
+        // Alternative signature
+        return block(blockName, undefined, mapPropsToModifiers);
     }
     assertNamePart(blockName);
-    if (!isFunction(mapPropsToModifiers)) {
-        throw new TypeError('[mapPropsToModifiers] should be a function');
-    }
+    const {styles} = options;
     const staticContext = {blockName, blockStyles: styles};
     return (...WrappedComponents) => {
         WrappedComponents
-            .filter(isFunction)
+            .filter(Wrapped => Wrapped instanceof Function)
             .forEach(prepareWrappedComponent(blockName, staticContext));
         const DefaultComponent = getDefaultComponent(WrappedComponents);
         assertComponentName(DefaultComponent, blockName);

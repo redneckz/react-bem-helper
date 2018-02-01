@@ -1,7 +1,3 @@
-import isString from 'lodash/isString';
-import isRegExp from 'lodash/isRegExp';
-import isFunction from 'lodash/isFunction';
-
 export function modifier(...modifierPredicates) {
     if (modifierPredicates.length === 0) {
         throw new TypeError('At least one modifier predicate should be provided');
@@ -15,11 +11,11 @@ export function modifier(...modifierPredicates) {
 }
 
 function adjustModifierPredicate(predicate) {
-    if (isFunction(predicate)) {
+    if (predicate instanceof Function) {
         return predicate;
-    } else if (isString(predicate)) {
+    } else if (typeof predicate === 'string') {
         return normalizedModifiers => normalizedModifiers[predicate];
-    } else if (isRegExp(predicate)) {
+    } else if (predicate instanceof RegExp) {
         return normalizedModifiers => Object.keys(normalizedModifiers)
             .some(mod => predicate.test(mod));
     }

@@ -1,4 +1,3 @@
-import isFunction from 'lodash/isFunction';
 import {modifier} from './modifier';
 
 describe('BEM modifier decorator', () => {
@@ -16,7 +15,7 @@ describe('BEM modifier decorator', () => {
         const WrappedFooQuux = modifier('quux')(FooQuux);
         expect(WrappedFooQuux.modifierPredicates).toHaveLength(1);
         const stringBasedPredicate = WrappedFooQuux.modifierPredicates[0];
-        expect(isFunction(stringBasedPredicate)).toBeTruthy();
+        expect(stringBasedPredicate).toBeInstanceOf(Function);
         const normalizedModifiers = {quux: true};
         expect(stringBasedPredicate(normalizedModifiers)).toBeTruthy();
         expect(stringBasedPredicate({baz: true})).toBeFalsy();
@@ -26,7 +25,7 @@ describe('BEM modifier decorator', () => {
         const WrappedFooQuux = modifier(/^size-(xs|sm|lg)$/)(FooQuux);
         expect(WrappedFooQuux.modifierPredicates).toHaveLength(1);
         const regexpBasedPredicate = WrappedFooQuux.modifierPredicates[0];
-        expect(isFunction(regexpBasedPredicate)).toBeTruthy();
+        expect(regexpBasedPredicate).toBeInstanceOf(Function);
         expect(regexpBasedPredicate({'size-xs': true})).toBeTruthy();
         expect(regexpBasedPredicate({'size-lg': true})).toBeTruthy();
         expect(regexpBasedPredicate({'size-nn': true})).toBeFalsy();
@@ -36,7 +35,7 @@ describe('BEM modifier decorator', () => {
         const WrappedFooQuux = modifier(({quux}) => quux)(FooQuux);
         expect(WrappedFooQuux.modifierPredicates).toHaveLength(1);
         const predicate = WrappedFooQuux.modifierPredicates[0];
-        expect(isFunction(predicate)).toBeTruthy();
+        expect(predicate).toBeInstanceOf(Function);
         const normalizedModifiers = {quux: true};
         expect(predicate(normalizedModifiers)).toBeTruthy();
         expect(predicate({baz: true})).toBeFalsy();
