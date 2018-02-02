@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import {Config} from '../config';
 import {createBlockNameFactory} from '../bem-naming-factory';
 import {blockContextTypes} from './block-context-types';
-import {chooseModifierComponent, getDefaultComponent} from '../modifier';
+import {chooseModifierComponent} from '../modifier';
 import {blockMixin} from './block-mixin';
 
 const {COMPONENT_BASE_CLASS} = Config;
@@ -25,15 +25,14 @@ export function block(blockName, mapPropsToModifiers = () => {}, options = {}) {
         WrappedComponents
             .filter(Wrapped => Wrapped instanceof Function)
             .forEach(prepareWrappedComponent(blockName, staticContext));
-        const DefaultComponent = getDefaultComponent(WrappedComponents);
-        const cx = classNames.bind(DefaultComponent.styles || styles || {});
+        const cx = classNames.bind(styles || {});
         const BlockWrapper = blockMixin(staticContext, class extends COMPONENT_BASE_CLASS {
             getChildContext() {
                 const modifiers = mapPropsToModifiers(this.props);
                 return {
                     blockName,
                     blockModifiers: classNames(modifiers),
-                    blockStyles: DefaultComponent.styles || styles
+                    blockStyles: styles
                 };
             }
 

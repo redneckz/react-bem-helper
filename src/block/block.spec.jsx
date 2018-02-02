@@ -8,9 +8,6 @@ const {MODIFIER_SEPARATOR} = Config;
 jest.mock('../modifier', () => ({
     chooseModifierComponent(Components = []) {
         return Components[0];
-    },
-    getDefaultComponent(Components = []) {
-        return Components[0];
     }
 }));
 
@@ -88,19 +85,6 @@ describe('BEM block decorator', () => {
             expect(fooClasses).toContain('foo#123');
             expect(fooClasses).toContain('quux#456');
         }
-
-        it('should take a class mapping from the static field [styles]', () => {
-            Foo.styles = {
-                foo: 'foo#123',
-                [`foo${MODIFIER_SEPARATOR}bar-quux`]: 'quux#456'
-            };
-            const WrappedFoo = block(
-                'foo',
-                ({bar}) => `bar-${bar}`
-            )(Foo);
-            renderer.render(<WrappedFoo bar="quux" />);
-            checkClasses();
-        });
 
         it('should take a class mapping from decorator third arg [options]', () => {
             const styles = {

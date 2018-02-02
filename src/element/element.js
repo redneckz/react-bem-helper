@@ -2,10 +2,7 @@ import React from 'react';
 import classNames from 'classnames/bind';
 import {createElementNameFactory} from '../bem-naming-factory';
 import {blockContextTypes} from '../block/block-context-types';
-import {
-    chooseModifierComponent, getDefaultComponent,
-    normalizeModifiers
-} from '../modifier';
+import {chooseModifierComponent, normalizeModifiers} from '../modifier';
 
 /**
  * @param {string} elementName
@@ -24,12 +21,11 @@ export function element(elementName, mapPropsToModifiers = () => {}, options = {
         WrappedComponents
             .filter(Wrapped => Wrapped instanceof Function)
             .forEach(prepareWrappedComponent(elementName));
-        const DefaultComponent = getDefaultComponent(WrappedComponents);
         function ElementWrapper(props, {blockName, blockModifiers, blockStyles} = {}) {
             const {className} = props;
             const modifiers = mapPropsToModifiers(props, normalizeModifiers(blockModifiers));
             const cx = classNames.bind(
-                DefaultComponent.styles || styles ||
+                styles ||
                 (staticContext.blockStyles || blockStyles) ||
                 {}
             );

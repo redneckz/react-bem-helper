@@ -9,9 +9,6 @@ jest.mock('../modifier', () => ({
     chooseModifierComponent(Components = []) {
         return Components[0];
     },
-    getDefaultComponent(Components = []) {
-        return Components[0];
-    },
     normalizeModifiers() {
         return {xyzzy: true, plugh: true};
     }
@@ -106,19 +103,6 @@ describe('BEM element decorator', () => {
             expect(fooBarClasses).toContain('foo#123');
             expect(fooBarClasses).toContain('quux#456');
         }
-
-        it('should take a class mapping from the static field [styles]', () => {
-            Bar.styles = {
-                [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123',
-                [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}baz-quux`]: 'quux#456'
-            };
-            const WrappedBar = element(
-                'bar',
-                ({baz}) => `baz-${baz}`
-            )(Bar);
-            renderer.render(<WrappedBar baz="quux" />, {blockName: 'foo'});
-            checkClasses();
-        });
 
         it('should take a class mapping from the context property [blockStyles]', () => {
             const WrappedBar = element(

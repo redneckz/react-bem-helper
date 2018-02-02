@@ -45,7 +45,7 @@ export function plainBlock(blockName, mapPropsToModifiers = () => {}, options = 
         if (WrappedComponent instanceof Function) {
             prepareWrappedComponent(blockName, staticContext)(WrappedComponent);
         }
-        const cx = classNames.bind(WrappedComponent.styles || styles || {});
+        const cx = classNames.bind(styles || {});
         function BlockWrapper(props) {
             const {className} = props;
             const modifiers = mapPropsToModifiers(props);

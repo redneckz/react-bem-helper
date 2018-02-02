@@ -13,11 +13,6 @@ export function chooseModifierComponent(Components = [], mappedModifiers = {}) {
     return chosenComponents[0];
 }
 
-export function getDefaultComponent(Components = []) {
-    const [defaultComponent] = Components.filter(Component => !Component.modifierPredicates);
-    return defaultComponent;
-}
-
 function assertChosenComponents(chosenComponents, normalizedModifiers) {
     if (!chosenComponents || (chosenComponents.length === 0)) {
         throw new Error(`Unsupported modifier provided: ${JSON.stringify(normalizedModifiers)}`);
