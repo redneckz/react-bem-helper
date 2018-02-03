@@ -1,19 +1,46 @@
 import {Config} from '../config';
-import {createModifiersMapper} from './modifiers-mapper-creator';
+import {kebabCase} from '../utils';
 
-export function createBlockNameFactory(block) {
-    if (!block) {
+/**
+ * @typedef {string} Modifier
+ * @typedef {string} ClassName
+ */
+
+/**
+ * Computes class names of block regarding active modifiers
+ *
+ * @param {string} blockName
+ * @return {Array(Modifier) -> Array(ClassName)}
+ */
+export function blockClassNames(blockName) {
+    if (!blockName) {
         throw new TypeError('[BEM] Block name should be defined');
     }
-    return createModifiersMapper(block);
+    return modifiedClassNames(blockName);
 }
 
-export function createElementNameFactory(block, element) {
-    if (!block) {
+/**
+ * Computes class names of element regarding active modifiers
+ *
+ * @param {string} blockName
+ * @param {string} elementName
+ * @return {Array(Modifier) -> ClassName}
+ */
+export function elementClassNames(blockName, elementName) {
+    if (!blockName) {
         throw new TypeError('[BEM] Block name should be defined');
     }
-    if (!element) {
+    if (!elementName) {
         throw new TypeError('[BEM] Element name should be defined');
     }
-    return createModifiersMapper(`${block}${Config.ELEMENT_SEPARATOR}${element}`);
+    return modifiedClassNames(`${blockName}${Config.ELEMENT_SEPARATOR}${elementName}`);
+}
+
+function modifiedClassNames(baseName) {
+    return (modifiers = []) => {
+        const modifiersClassNames = modifiers
+            .filter(Boolean)
+            .map(mod => `${baseName}${Config.MODIFIER_SEPARATOR}${kebabCase(mod)}`);
+        return [baseName].concat(modifiersClassNames);
+    };
 }

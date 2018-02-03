@@ -1,118 +1,25 @@
-import React from 'react';
-import ReactShallowRenderer from 'react-test-renderer/shallow';
-import {Config} from '../config';
+import {baseBlock} from './base-block';
 import {plainBlock} from './plain-block';
 
-const {MODIFIER_SEPARATOR} = Config;
+jest.mock('./base-block', () => ({
+    baseBlock: jest.fn()
+}));
 
 describe('BEM plain block decorator', () => {
-    let renderer;
-    let Foo;
     beforeEach(() => {
-        renderer = new ReactShallowRenderer();
-        Foo = () => <div />;
+        baseBlock.mockReset();
     });
 
-    it('should have [displayName] containing block name', () => {
-        const WrappedFoo = plainBlock('foo')(Foo);
-        expect(WrappedFoo.displayName).toEqual('block(foo)');
+    it('should transparently delegate call to baseBlock', () => {
+        const mapPropsToModifiers = () => {};
+        const options = {};
+        plainBlock('foo', mapPropsToModifiers, options);
+        expect(baseBlock).toBeCalledWith('foo', mapPropsToModifiers, options);
     });
 
-    it('should inject [className] property containing block name', () => {
-        const WrappedFoo = plainBlock('foo')(Foo);
-        renderer.render(<WrappedFoo />);
-        const wrappedFoo = renderer.getRenderOutput();
-        expect(wrappedFoo.props.className).toBeDefined();
-        expect(wrappedFoo.props.className).toEqual('foo');
-    });
-
-    it('should mixin provided [className] property (passed to decorator) ' +
-            'into resulting [className] property (injected to wrapped/underlying component)', () => {
-        const WrappedFoo = plainBlock('foo')(Foo);
-        renderer.render(<WrappedFoo className="quux" />);
-        const wrappedFoo = renderer.getRenderOutput();
-        expect(wrappedFoo.props.className).toBeDefined();
-        const fooClasses = wrappedFoo.props.className.split(' ');
-        expect(fooClasses).toHaveLength(2);
-        expect(fooClasses).toContain('foo');
-        expect(fooClasses).toContain('quux');
-    });
-
-    it('should transduce properties to modifiers and mixin corresponding classes to [className]', () => {
-        const WrappedFoo = plainBlock(
-            'foo',
-            ({bar}) => `bar-${bar}` // transducer
-        )(Foo);
-        renderer.render(<WrappedFoo bar="quux" />);
-        const wrappedFoo = renderer.getRenderOutput();
-        expect(wrappedFoo.props.className).toBeDefined();
-        const fooClasses = wrappedFoo.props.className.split(' ');
-        expect(fooClasses).toHaveLength(2);
-        expect(fooClasses).toContain('foo');
-        expect(fooClasses).toContain(`foo${MODIFIER_SEPARATOR}bar-quux`);
-    });
-
-    it('should accept "classnames" compatible structures as modifiers', () => {
-        const WrappedFoo = plainBlock(
-            'foo',
-            ({bar, baz}) => ([
-                {notBar: !bar},
-                `baz-${baz}`
-            ])
-        )(Foo);
-        renderer.render(<WrappedFoo bar={false} baz="quxx" />);
-        const wrappedFoo = renderer.getRenderOutput();
-        expect(wrappedFoo.props.className).toBeDefined();
-        const fooClasses = wrappedFoo.props.className.split(' ');
-        expect(fooClasses).toHaveLength(3);
-        expect(fooClasses).toContain('foo');
-        expect(fooClasses).toContain(`foo${MODIFIER_SEPARATOR}not-bar`);
-        expect(fooClasses).toContain(`foo${MODIFIER_SEPARATOR}baz-quxx`);
-    });
-
-    describe('which wraps a component with modular css', () => {
-        function checkClasses() {
-            const wrappedFoo = renderer.getRenderOutput();
-            expect(wrappedFoo.props.className).toBeDefined();
-            const fooClasses = wrappedFoo.props.className.split(' ');
-            expect(fooClasses).toHaveLength(2);
-            expect(fooClasses).toContain('foo#123');
-            expect(fooClasses).toContain('quux#456');
-        }
-
-        it('should take a class mapping from decorator third arg [options]', () => {
-            const styles = {
-                foo: 'foo#123',
-                [`foo${MODIFIER_SEPARATOR}bar-quux`]: 'quux#456'
-            };
-            const WrappedFoo = plainBlock(
-                'foo',
-                ({bar}) => `bar-${bar}`,
-                {styles} // options
-            )(Foo);
-            renderer.render(<WrappedFoo bar="quux" />);
-            checkClasses();
-        });
-
-        it('should take a class mapping from decorator second arg [options] (overloaded version)', () => {
-            const styles = {
-                foo: 'foo#123'
-            };
-            const WrappedFoo = plainBlock(
-                'foo',
-                {styles} // options
-            )(Foo);
-            renderer.render(<WrappedFoo />);
-            const wrappedFoo = renderer.getRenderOutput();
-            expect(wrappedFoo.props.className).toEqual('foo#123');
-        });
-    });
-
-    it('should decorate components defined as tag name', () => {
-        const WrappedFoo = plainBlock('foo')('div');
-        renderer.render(<WrappedFoo />);
-        const wrappedFoo = renderer.getRenderOutput();
-        expect(wrappedFoo.type).toEqual('div');
-        expect(wrappedFoo.props.className).toEqual('foo');
+    it('should take options as second arg (overloaded version)', () => {
+        const options = {};
+        plainBlock('foo', options);
+        expect(baseBlock).toBeCalledWith('foo', undefined, options);
     });
 });

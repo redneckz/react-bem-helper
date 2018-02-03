@@ -1,1 +1,1 @@
-export {createBlockNameFactory, createElementNameFactory} from './bem-naming-factory';
+export {blockClassNames, elementClassNames} from './bem-naming-factory';

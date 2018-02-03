@@ -5,15 +5,6 @@ import {element} from './element';
 
 const {ELEMENT_SEPARATOR, MODIFIER_SEPARATOR} = Config;
 
-jest.mock('../modifier', () => ({
-    chooseModifierComponent(Components = []) {
-        return Components[0];
-    },
-    normalizeModifiers() {
-        return {xyzzy: true, plugh: true};
-    }
-}));
-
 describe('BEM element decorator', () => {
     let renderer;
     let Bar;
@@ -22,7 +13,7 @@ describe('BEM element decorator', () => {
         Bar = () => <div />;
     });
 
-    it('should have [displayName] containing element name', () => {
+    it('should inject [displayName] containing element name', () => {
         const WrappedBar = element('bar')(Bar);
         expect(WrappedBar.displayName).toEqual('element(bar)');
     });
@@ -87,10 +78,7 @@ describe('BEM element decorator', () => {
         });
         expect(mapPropsToModifiers).toBeCalledWith(
             {},
-            {
-                xyzzy: true,
-                plugh: true
-            }
+            ['xyzzy', 'plugh']
         );
     });
 

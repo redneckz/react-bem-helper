@@ -45,15 +45,10 @@ export const textarea = attrs => tag('textarea', {
     name: '', rows: 2, ...attrs
 });
 
-export const BEM = {
-    div,
-    span,
-    form,
-    button,
-    input,
-    label,
-    textarea
-};
+// Also "tag" can be used as namespace
+Object.assign(tag, {
+    div, span, form, button, input, label, textarea
+});
 
 function pick(props, keysList) {
     const filteredProps = keysList

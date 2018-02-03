@@ -1,8 +1,7 @@
 import React from 'react';
-import classNames from 'classnames/bind';
-import {createElementNameFactory} from '../bem-naming-factory';
+import {classNamesList} from '../utils';
+import {elementClassNames} from '../bem-naming-factory';
 import {blockContextTypes} from '../block/block-context-types';
-import {chooseModifierComponent, normalizeModifiers} from '../modifier';
 
 /**
  * @param {string} elementName
@@ -17,34 +16,19 @@ export function element(elementName, mapPropsToModifiers = () => {}, options = {
     }
     const {styles} = options;
     const staticContext = this || {}; // @block static context
-    return (...WrappedComponents) => {
-        WrappedComponents
-            .filter(Wrapped => Wrapped instanceof Function)
-            .forEach(prepareWrappedComponent(elementName));
-        function ElementWrapper(props, {blockName, blockModifiers, blockStyles} = {}) {
+    return (ElementComponent) => {
+        function ElementWrapper(props, {blockName, blockModifiers = '', blockStyles} = {}) {
             const {className} = props;
-            const modifiers = mapPropsToModifiers(props, normalizeModifiers(blockModifiers));
-            const cx = classNames.bind(
-                styles ||
-                (staticContext.blockStyles || blockStyles) ||
-                {}
+            const modifiers = classNamesList()(
+                mapPropsToModifiers(props, classNamesList()(blockModifiers))
             );
-            const elementNameFactory = createElementNameFactory(
-                staticContext.blockName || blockName,
-                elementName
-            );
-            const elementClassName = cx(
-                elementNameFactory(),
-                modifiers && elementNameFactory(modifiers),
-                className
-            );
-            const TargetComponent = chooseModifierComponent(
-                WrappedComponents,
-                modifiers
-            );
-            return React.createElement(TargetComponent, {
+            return React.createElement(ElementComponent, {
                 ...props,
-                className: elementClassName
+                className: classNamesList(styles || (staticContext.blockStyles || blockStyles))(
+                    elementClassNames(staticContext.blockName || blockName, elementName)(modifiers),
+                    className // BEM mixin
+                ).join(' '),
+                modifiers: modifiers.join(' ')
             });
         }
         ElementWrapper.displayName = `element(${elementName})`;
@@ -64,10 +48,4 @@ export function transparent(mapPropsToModifiers = () => {}) {
         mapPropsToModifiers(props),
         blockModifiers
     ];
-}
-
-function prepareWrappedComponent(elementName) {
-    return (Wrapped) => {
-        Wrapped.displayName = elementName; // eslint-disable-line no-param-reassign
-    };
 }

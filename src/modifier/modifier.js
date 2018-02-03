@@ -1,23 +1,30 @@
-export function modifier(...modifierPredicates) {
-    if (modifierPredicates.length === 0) {
-        throw new TypeError('At least one modifier predicate should be provided');
-    }
-    const adjustedModifierPredicates = modifierPredicates.map(adjustModifierPredicate);
-    return (ModifierComponent) => {
-        // eslint-disable-next-line no-param-reassign
-        ModifierComponent.modifierPredicates = adjustedModifierPredicates;
-        return ModifierComponent;
-    };
-}
+import React from 'react';
 
-function adjustModifierPredicate(predicate) {
-    if (predicate instanceof Function) {
-        return predicate;
-    } else if (typeof predicate === 'string') {
-        return normalizedModifiers => normalizedModifiers[predicate];
-    } else if (predicate instanceof RegExp) {
-        return normalizedModifiers => Object.keys(normalizedModifiers)
-            .some(mod => predicate.test(mod));
+/**
+ * Decorator to define components bound to particular modifiers
+ *
+ * @typedef {string} Modifier
+ *
+ * @param {Array(Modifier) -> boolean} predicate
+ * @param {Component} ModifiedComponent
+ */
+export function modifier(predicate, ModifiedComponent) {
+    if (typeof predicate !== 'function') {
+        throw new TypeError('Please specify modifier predicate');
     }
-    throw new TypeError('Modifier predicate should be function, string or regexp');
+    if (typeof ModifiedComponent !== 'function') {
+        throw new TypeError('Please specify modified component');
+    }
+    return (DefaultComponent) => {
+        function Wrapper(props) {
+            const {modifiers} = props; // Comes from block or element decorators
+            const modifiersList = modifiers ? modifiers.split(' ') : [];
+            return React.createElement(
+                predicate(modifiersList) ? ModifiedComponent : DefaultComponent,
+                props
+            );
+        }
+        Wrapper.displayName = `modifier(${DefaultComponent.displayName || DefaultComponent.name})`;
+        return Wrapper;
+    };
 }
