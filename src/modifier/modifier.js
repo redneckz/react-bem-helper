@@ -1,4 +1,5 @@
 import React from 'react';
+import * as ModifierPredicates from './modifier-predicates';
 
 /**
  * Decorator to define components bound to particular modifiers
@@ -28,3 +29,6 @@ export function modifier(predicate, ModifiedComponent) {
         return Wrapper;
     };
 }
+
+// Also "modifier" is used as namespace for predicates
+Object.assign(modifier, ModifierPredicates);
