@@ -1,4 +1,5 @@
 import React from 'react';
+import {pick} from '../utils';
 
 /**
  * Since react@15.2.0 there is new mechanism for handling unknown props.
@@ -10,6 +11,7 @@ import React from 'react';
  * @returns {React.Component} DOM component
  */
 export function tag(tagName, attrs = {}) {
+    const prune = pick(Object.keys(attrs));
     function Tag({
         key, className, children, ...props
     }) {
@@ -19,7 +21,7 @@ export function tag(tagName, attrs = {}) {
                 key,
                 className,
                 ...attrs,
-                ...pick(props, Object.keys(attrs))
+                ...prune(props)
             },
             children
         );
@@ -44,17 +46,3 @@ export const label = attrs => tag('label', {
 export const textarea = attrs => tag('textarea', {
     name: '', rows: 2, ...attrs
 });
-
-// Also "tag" can be used as namespace
-Object.assign(tag, {
-    div, span, form, button, input, label, textarea
-});
-
-function pick(props, keysList) {
-    const filteredProps = keysList
-        .filter(key => key in props)
-        .map(key => ({
-            [key]: props[key]
-        }));
-    return Object.assign({}, ...filteredProps);
-}

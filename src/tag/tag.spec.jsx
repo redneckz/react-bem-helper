@@ -16,7 +16,7 @@ describe('[tag] factory function', () => {
         expect(foo.type).toBe(tagName);
     });
 
-    it('should create DOM component with provided attributes (whitelist)', () => {
+    it('should create DOM component with default attributes from whitelist', () => {
         const attrs = {
             id: 'bar',
             lang: 'ru',
@@ -35,9 +35,14 @@ describe('[tag] factory function', () => {
             title: 'Bar'
         };
         const Foo = tag('foo', attrs);
-        renderer.render(<Foo quux="quux" />);
+        renderer.render(<Foo id="123" lang="en" quux="quux" />);
         const foo = renderer.getRenderOutput();
-        expect(foo.props).toEqual(attrs);
+        expect(foo.props).toEqual({
+            ...attrs,
+            id: '123',
+            lang: 'en'
+            // quux is out of the whitelist
+        });
     });
 
     describe('[div]', () => {
