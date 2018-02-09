@@ -1,2 +1,4 @@
+import {baseBlock} from './base-block';
+
 export {block} from './block';
-export {plainBlock} from './plain-block';
+export {baseBlock, baseBlock as plainBlock};

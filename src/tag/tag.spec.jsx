@@ -49,7 +49,7 @@ describe('[tag] factory function', () => {
         it('should produce "div"', () => {
             const Div = div();
             renderer.render(<Div />);
-            expect(renderer.getRenderOutput().type).toEqual('div');
+            expect(renderer.getRenderOutput().type).toBe('div');
         });
     });
 
@@ -57,7 +57,7 @@ describe('[tag] factory function', () => {
         it('should produce "span"', () => {
             const Span = span();
             renderer.render(<Span />);
-            expect(renderer.getRenderOutput().type).toEqual('span');
+            expect(renderer.getRenderOutput().type).toBe('span');
         });
     });
 
@@ -65,7 +65,7 @@ describe('[tag] factory function', () => {
         it('should produce "form"', () => {
             const Form = form();
             renderer.render(<Form />);
-            expect(renderer.getRenderOutput().type).toEqual('form');
+            expect(renderer.getRenderOutput().type).toBe('form');
         });
     });
 
@@ -74,8 +74,8 @@ describe('[tag] factory function', () => {
             const Button = button();
             renderer.render(<Button />);
             const out = renderer.getRenderOutput();
-            expect(out.type).toEqual('button');
-            expect(out.props.type).toEqual('button');
+            expect(out.type).toBe('button');
+            expect(out.props.type).toBe('button');
             expect(out.props.onClick).toBeDefined();
         });
     });
@@ -85,7 +85,7 @@ describe('[tag] factory function', () => {
             const Input = input();
             renderer.render(<Input />);
             const out = renderer.getRenderOutput();
-            expect(out.type).toEqual('input');
+            expect(out.type).toBe('input');
             expect(out.props).toEqual({
                 type: 'text',
                 name: '',
@@ -99,8 +99,8 @@ describe('[tag] factory function', () => {
             const Label = label();
             renderer.render(<Label />);
             const out = renderer.getRenderOutput();
-            expect(out.type).toEqual('label');
-            expect(out.props.htmlFor).toEqual('');
+            expect(out.type).toBe('label');
+            expect(out.props.htmlFor).toBe('');
         });
     });
 
@@ -109,7 +109,7 @@ describe('[tag] factory function', () => {
             const Textarea = textarea();
             renderer.render(<Textarea />);
             const out = renderer.getRenderOutput();
-            expect(out.type).toEqual('textarea');
+            expect(out.type).toBe('textarea');
             expect(out.props).toEqual({
                 name: '',
                 rows: 2 // HTML5 spec

@@ -4,12 +4,30 @@ import {blockClassNames} from '../bem-naming-factory';
 import {element} from '../element';
 
 /**
+ * Base decorator to declare BEM blocks. Injects computed [className] and [modifiers].
+ * @alias plainBlock
+ *
+ * Usage:
+ *
+ * import {plainBlock} from '@redneckz/react-bem-helper';
+ *
+ * const Foo = plainBlock('foo')('div');
+ * const Bar = Foo.element('bar')('div');
+ *
+ * <Foo>
+ *     <Bar>123</Bar>
+ * </Foo>
+ *
  * @param {string} blockName
  * @param {Props -> Modifiers} [mapPropsToModifiers]
  * @param {{styles: Object}} [options]
  * @return {Component -> Component} decorator to declare blocks
  */
 export function baseBlock(blockName, mapPropsToModifiers = () => {}, options = {}) {
+    if (typeof mapPropsToModifiers === 'object') {
+        // Alternative signature
+        return baseBlock(blockName, undefined, mapPropsToModifiers);
+    }
     const {styles} = options;
     const mixin = staticContextMixin({blockName, blockStyles: styles});
     return (BlockComponent) => {

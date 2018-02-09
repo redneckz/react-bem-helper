@@ -4,6 +4,23 @@ import {baseBlock} from './base-block';
 import {blockContextTypes} from './block-context-types';
 
 /**
+ * Decorator to declare BEM blocks. Injects computed [className] and [modifiers].
+ * Also context is used to share block name, block modifiers and block styles with elements.
+ * So BEM elements can be declared separately from block.
+ *
+ * But be careful using this technique. For example:
+ *
+ * import {block, element} from '@redneckz/react-bem-helper';
+ *
+ * const BlockA = block('block-a')(() => (
+ *     <BlockB>
+ *         <ElementA /> {/* Erroneously bound to BlockB /}
+ *         <ElementB /> {/* Correctly bound to BlockA /}
+ *     </BlockB>
+ * ));
+ * const ElementA = element('element-a')('div'); // Component context
+ * const ElementB = BlockA.element('element-b')('div'); // Static context
+ *
  * @param {string} blockName
  * @param {Props -> Modifiers} [mapPropsToModifiers]
  * @param {{styles: Object}} [options]

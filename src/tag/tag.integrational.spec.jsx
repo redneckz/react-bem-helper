@@ -8,7 +8,7 @@ describe('DOM components produced by "tag" factory and wrapped by BEM block deco
         const WrappedFoo = plainBlock('foo')(div({role: 'separator'}));
         const renderer = ReactTestRenderer.create(<WrappedFoo quux xyzzy />);
         const wrappedFoo = renderer.toJSON();
-        expect(wrappedFoo.type).toEqual('div');
+        expect(wrappedFoo.type).toBe('div');
         expect(wrappedFoo.props).toEqual({className: 'foo', role: 'separator'});
     });
 });
