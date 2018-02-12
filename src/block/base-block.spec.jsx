@@ -41,31 +41,37 @@ describe('BEM base block decorator', () => {
         )(Foo);
         renderer.render(<WrappedFoo bar="quux" />);
         const wrappedFoo = renderer.getRenderOutput();
-        expect(wrappedFoo.props.className)
-            .toBe(`foo foo${MODIFIER_SEPARATOR}quux`);
+        expect(wrappedFoo.props.className).toBe(`foo foo${MODIFIER_SEPARATOR}quux`);
     });
 
     it('should support "classnames" compatible structures as modifiers', () => {
         const WrappedFoo = baseBlock(
             'foo',
-            ({bar, baz}) => [
-                {notBar: !bar},
-                baz
-            ]
+            ({bar, baz}) => [bar, {baz}] // properties to modifiers
         )(Foo);
-        renderer.render(<WrappedFoo bar={false} baz="quxx" />);
+        renderer.render(<WrappedFoo bar="quux" baz />);
         const wrappedFoo = renderer.getRenderOutput();
         expect(wrappedFoo.props.className)
-            .toBe(`foo foo${MODIFIER_SEPARATOR}not-bar foo${MODIFIER_SEPARATOR}quxx`);
+            .toBe(`foo foo${MODIFIER_SEPARATOR}quux foo${MODIFIER_SEPARATOR}baz`);
     });
 
-    describe('which wraps component with modular css', () => {
+    it('should map properties to modifiers and inject [modifiers] property with active modifiers', () => {
+        const WrappedFoo = baseBlock(
+            'foo',
+            ({bar, baz}) => [bar, {baz}] // properties to modifiers
+        )(Foo);
+        renderer.render(<WrappedFoo bar="quux" baz />);
+        const wrappedFoo = renderer.getRenderOutput();
+        expect(wrappedFoo.props.modifiers).toBe('quux baz');
+    });
+
+    describe('which wraps component with modular CSS', () => {
         const styles = {
             foo: 'foo#123',
             [`foo${MODIFIER_SEPARATOR}quux`]: 'quux#456'
         };
 
-        it('should use class mapping from [options] which is passed as third arg', () => {
+        it('should use class names mapping from [options] which is passed as third arg', () => {
             const WrappedFoo = baseBlock(
                 'foo',
                 ({bar}) => bar,
@@ -76,7 +82,7 @@ describe('BEM base block decorator', () => {
             expect(wrappedFoo.props.className).toBe('foo#123 quux#456');
         });
 
-        it('should use class mapping from [options] which is passed as second arg', () => {
+        it('should use class names mapping from [options] which is passed as second arg', () => {
             const WrappedFoo = baseBlock(
                 'foo',
                 {styles} // options

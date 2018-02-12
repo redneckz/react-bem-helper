@@ -25,18 +25,6 @@ describe('BEM block decorator', () => {
         expect(baseBlock).toBeCalledWith('foo', mapPropsToModifiers, options);
     });
 
-    it('should take options as second arg (overloaded version)', () => {
-        const options = {styles: {}};
-        block('foo', options);
-        expect(baseBlock).toBeCalledWith('foo', undefined, options);
-    });
-
-    it('should have [displayName] containing block name', () => {
-        const Foo = () => <div />;
-        const WrappedFoo = block('foo')(Foo);
-        expect(WrappedFoo.displayName).toBe('block-with-context(foo)');
-    });
-
     it('should provide block name, block modifiers and block styles by means of context', () => {
         const Foo = jest.fn(() => null);
         Foo.contextTypes = blockContextTypes;
@@ -50,5 +38,17 @@ describe('BEM block decorator', () => {
         expect(Foo.mock.calls.length).toBe(1);
         const [[, context]] = Foo.mock.calls;
         expect(context).toEqual({blockName, blockModifiers, blockStyles});
+    });
+
+    it('should take options as second arg (overloaded version)', () => {
+        const options = {styles: {}};
+        block('foo', options);
+        expect(baseBlock).toBeCalledWith('foo', undefined, options);
+    });
+
+    it('should declare [displayName] containing block name', () => {
+        const Foo = () => <div />;
+        const WrappedFoo = block('foo')(Foo);
+        expect(WrappedFoo.displayName).toBe('block-with-context(foo)');
     });
 });
