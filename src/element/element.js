@@ -28,7 +28,7 @@ export function element(elementName, mapPropsToModifiers = () => {}, options = {
                     elementClassNames(staticContext.blockName || blockName, elementName)(modifiers),
                     className // BEM mixin
                 ).join(' '),
-                modifiers: modifiers.join(' ')
+                'data-modifiers': modifiers.join(' ')
             });
         }
         ElementWrapper.displayName = `element(${elementName})`;

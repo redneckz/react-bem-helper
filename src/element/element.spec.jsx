@@ -20,7 +20,7 @@ describe('BEM element decorator', () => {
         expect(wrappedFooBar.props.className).toBe(`foo${ELEMENT_SEPARATOR}bar`);
     });
 
-    it('should pass through all props except [className] and [modifiers]', () => {
+    it('should pass through all props except [className] and [data-modifiers]', () => {
         const WrappedBar = element('bar')(Bar);
         renderer.render(<WrappedBar quux />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
@@ -60,14 +60,14 @@ describe('BEM element decorator', () => {
         );
     });
 
-    it('should map properties to modifiers and inject [modifiers] property with active modifiers', () => {
+    it('should map properties to modifiers and inject [data-modifiers] property with active modifiers', () => {
         const WrappedBar = element(
             'bar',
             ({baz, plugh}) => [baz, {plugh}] // properties to modifiers
         )(Bar);
         renderer.render(<WrappedBar baz="quux" plugh />, {blockName: 'foo'});
         const wrappedFooBar = renderer.getRenderOutput();
-        expect(wrappedFooBar.props.modifiers).toBe('quux plugh');
+        expect(wrappedFooBar.props['data-modifiers']).toBe('quux plugh');
     });
 
     it('should pass block modifiers to [mapPropsToModifiers] function as second argument', () => {

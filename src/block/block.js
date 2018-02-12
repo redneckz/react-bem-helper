@@ -4,7 +4,8 @@ import {baseBlock} from './base-block';
 import {blockContextTypes} from './block-context-types';
 
 /**
- * Decorator to declare BEM blocks. Injects computed [className] and [modifiers].
+ * Decorator to declare BEM blocks.
+ * Injects computed [className] and [data-modifiers].
  * Also context is used to share block name, block modifiers and block styles with elements.
  * So BEM elements can be declared separately from block.
  *
@@ -39,7 +40,7 @@ export function block(blockName, mapPropsToModifiers, options) {
                 getChildContext() {
                     return {
                         blockName,
-                        blockModifiers: this.props.modifiers,
+                        blockModifiers: this.props['data-modifiers'],
                         blockStyles: styles
                     };
                 }

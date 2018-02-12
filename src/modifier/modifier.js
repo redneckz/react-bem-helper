@@ -17,7 +17,7 @@ export function modifier(predicate, ModifiedComponent) {
     }
     return (DefaultComponent) => {
         function Wrapper(props) {
-            const {modifiers} = props; // Comes from block or element decorators
+            const {'data-modifiers': modifiers} = props; // Comes from block or element decorators
             const modifiersList = modifiers ? modifiers.split(' ') : [];
             return React.createElement(
                 predicate(modifiersList) ? ModifiedComponent : DefaultComponent,

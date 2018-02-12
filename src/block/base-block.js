@@ -4,7 +4,8 @@ import {blockClassNames} from '../bem-naming-factory';
 import {element} from '../element';
 
 /**
- * Base decorator to declare BEM blocks. Injects computed [className] and [modifiers].
+ * Base decorator to declare BEM blocks.
+ * Injects computed [className] and [data-modifiers].
  * @alias plainBlock
  *
  * Usage:
@@ -41,7 +42,7 @@ export function baseBlock(blockName, mapPropsToModifiers = () => {}, options = {
                     blockClassNames(blockName)(modifiers),
                     className // BEM mixin
                 ).join(' '),
-                modifiers: modifiers.join(' ')
+                'data-modifiers': modifiers.join(' ')
             });
         }
         BaseBlockWrapper.displayName = `block(${blockName})`;

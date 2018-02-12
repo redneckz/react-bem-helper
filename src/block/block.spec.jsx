@@ -33,7 +33,7 @@ describe('BEM block decorator', () => {
         const blockModifiers = 'quux';
         const blockStyles = {foo: 'foo#123'};
         const WrappedFoo = block(blockName, {styles: blockStyles})(Foo);
-        mount(<WrappedFoo modifiers={blockModifiers} />);
+        mount(<WrappedFoo data-modifiers={blockModifiers} />);
 
         expect(Foo.mock.calls.length).toBe(1);
         const [[, context]] = Foo.mock.calls;

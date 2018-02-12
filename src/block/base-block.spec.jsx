@@ -20,7 +20,7 @@ describe('BEM base block decorator', () => {
         expect(wrappedFoo.props.className).toBe('foo');
     });
 
-    it('should pass through all props except [className] and [modifiers]', () => {
+    it('should pass through all props except [className] and [data-modifiers]', () => {
         const WrappedFoo = baseBlock('foo')(Foo);
         renderer.render(<WrappedFoo bar="quux" />);
         const wrappedFoo = renderer.getRenderOutput();
@@ -55,14 +55,14 @@ describe('BEM base block decorator', () => {
             .toBe(`foo foo${MODIFIER_SEPARATOR}quux foo${MODIFIER_SEPARATOR}baz`);
     });
 
-    it('should map properties to modifiers and inject [modifiers] property with active modifiers', () => {
+    it('should map properties to modifiers and inject [data-modifiers] property with active modifiers', () => {
         const WrappedFoo = baseBlock(
             'foo',
             ({bar, baz}) => [bar, {baz}] // properties to modifiers
         )(Foo);
         renderer.render(<WrappedFoo bar="quux" baz />);
         const wrappedFoo = renderer.getRenderOutput();
-        expect(wrappedFoo.props.modifiers).toBe('quux baz');
+        expect(wrappedFoo.props['data-modifiers']).toBe('quux baz');
     });
 
     describe('which wraps component with modular CSS', () => {

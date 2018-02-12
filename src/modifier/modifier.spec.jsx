@@ -31,7 +31,7 @@ describe('BEM modifier decorator', () => {
     it('should pass active modifiers to predicate', () => {
         const predicate = jest.fn();
         const WrappedFoo = modifier(predicate, FooQuux)(Foo);
-        renderer.render(<WrappedFoo modifiers="quux plugh" />);
+        renderer.render(<WrappedFoo data-modifiers="quux plugh" />);
         expect(predicate).toBeCalledWith(['quux', 'plugh']);
     });
 
