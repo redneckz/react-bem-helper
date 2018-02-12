@@ -37,6 +37,9 @@ Primarily it useful to organize interaction between *React* components
 and *style* artifacts (CSS, Less, Sass, ...) computing valid class names
 and ensuring compliance with the BEM naming convention (configurable).
 
+Also compared to other libraries this small utility is aimed at *simplicity* and
+incremental adaptation of *BEM*.
+
 # Features
 
 1. Decorators *\@block*, *\@element*, *\@modifier* to define *BEM* entities
@@ -45,6 +48,8 @@ as *React* components
 3. *BEM mixins* support
 4. Modular CSS support
 5. Configurable
+6. Very small bundle ~8Kb
+7. Almost no dependencies
 
 # Prerequisites
 
@@ -60,8 +65,7 @@ import {block} from '@redneckz/react-bem-helper';
 
 const SomeButton = block(
     'some-button',
-     // Component props to block modifiers transducer
-    ({disabled}) => ({disabled})
+    ({disabled}) => ({disabled}) // Maps component props to block modifiers
 )('button');
 ```
 
@@ -69,44 +73,57 @@ const SomeButton = block(
 <SomeButton disabled>BEM</SomeButton>
 ```
 
-will produce
+will produce:
 
 ```html
 <button class="some-button some-button--disabled" disabled>BEM</button>
 ```
 
-This is *very similar* to
+Or *equivalent* example:
 
 ```jsx
-const SomeButton = block('some-button', ({disabled}) => ({disabled}))(
+const SomeButton = block(
+    'some-button',
+    ({disabled}) => ({disabled}) // Maps component props to block modifiers
+)(
     ({className, ...props}) => <button className={className} {...props} />
 );
 ```
 
-Or *even* more complicated
+Or *even* more complicated:
 
 ```jsx
 @block('some-button', ({disabled}) => ({disabled}))
-class Panel extends React.PureComponent {
+class SomeButton extends React.PureComponent {
     render() {
-        const {className, ...props} = this.props;
+        const {
+            className, // Computed by decorator
+            ...props
+        } = this.props;
         return <button className={className} {...props} />;
     }
 }
 ```
 
-And one *more* (button attributes are *whitelisted* in the following example)
+And one *more*:
 
 ```jsx
 import React from 'react';
-import {block, button} from '@redneckz/react-bem-helper';
+import {block, button, pick} from '@redneckz/react-bem-helper';
 
-const SomeButton = block('some-button', ({disabled}) => ({disabled}))(
+const SomeButton = block(
+    'some-button',
+    pick(['disabled']) // Utility to treat some props as modifiers
+)(
     button({disabled: false}) // Produces DOM component
 );
 ```
 
-All of the above can be applied to *\@element*.
+In the above example utility *button* is used to define DOM component with whitelisted properties.
+So the button can be enabled or disabled and nothing else (other properties are rejected).
+There are other utilities like *button*: *div*, *span*, *form*, *input*, *label*, *textarea*.
+
+All of the above can be applied to *\@element* decorator.
 
 ## Block with element
 
@@ -129,7 +146,7 @@ class Panel extends React.PureComponent {
 const PanelTitle = element('title')('div');
 ```
 
-See the Pen [Block "panel" with element "title"](https://codepen.io/redneckz/pen/pPrByW)
+See the Pen [Block with element](https://codepen.io/redneckz/pen/RQgYRg)
 on [CodePen](http://codepen.io)
 
 ## Block with namespaced element
@@ -138,7 +155,7 @@ Preliminary it is necessary to give an explanation about *\@plainBlock* decorato
 It's very similar to *\@block* decorator. And it has the same interface.
 But context API (see https://facebook.github.io/react/docs/context.html)
 is disabled and replaced with static context. This leads to deprivation of
-standalone *\@element* support as well as [block modifier sharing](#block-shares-modifier-across-elements).
+standalone *\@element* support (like in the above example).
 
 Both *\@block* and *\@plainBlock* decorators support so called namespaced *\@element* decorator.
 
@@ -149,20 +166,23 @@ But its definition should be bound to particular block like follows.
 const PanelTitle = Panel.element('title')('div');
 ```
 
-Also such definitions are useful in complicated cases
+Also such definitions are useful in complicated cases:
 
 ```jsx
 const BlockA = block('block-a')(() => (
     <BlockB>
-        <ElementA /> {/* ElementA is erroneously bound to BlockB */}
-        <ElementB /> {/* ElementB works just fine */}
+        <ElementA /> {/* Erroneously bound to BlockB */}
+        <ElementB /> {/* Correctly bound to BlockA */}
     </BlockB>
 ));
-const ElementA = element('element-a')('div');
-const ElementB = BlockA.element('element-b')('div');
+const ElementA = element('element-a')('div'); // Component context
+const ElementB = BlockA.element('element-b')('div'); // Static context
 ```
 
-## Block with enumerable modifier
+See the Pen [Block with namespaced element](https://codepen.io/redneckz/pen/NygLaE)
+on [CodePen](http://codepen.io)
+
+## Block with modifiers
 
 ```jsx
 @block(
@@ -171,11 +191,7 @@ const ElementB = BlockA.element('element-b')('div');
 )
 class SomeButton extends React.PureComponent {
     render() {
-        const {
-            className, // computed and injected by @block
-            disabled,
-            children
-        } = this.props;
+        const {className, disabled, children} = this.props;
         return (
             <button className={className} disabled={disabled}>
                 {children}
@@ -185,76 +201,103 @@ class SomeButton extends React.PureComponent {
 }
 ```
 
-See the Pen [Block "some-button" with enumerable modifier "size"](http://codepen.io/redneckz/pen/vmJMwX)
+See the Pen [Block with modifiers](https://codepen.io/redneckz/pen/eVRLVm)
 on [CodePen](http://codepen.io)
 
-## Block shares modifier across elements
+## Element with transparently applied modifier of block
 
 ```jsx
 const Panel = block(
     'panel',
-    ({inverted}) => ({inverted})
-)(({className, title, children}) => (
-    <div className={className}>
-        <PanelTitle>{title}</PanelTitle>
-        {children}
-    </div>
-))
+    pick(['inverted'])
+)(
+    ({className, title, children}) => (
+        <div className={className}>
+            <PanelTitle>{title}</PanelTitle>
+            {children}
+        </div>
+    )
+)
 ```
 
 ```jsx
 const PanelTitle = element(
     'title',
-    // Apply block modifiers as is (transparently)
-    transparent()
+    transparent() // Transparently applies block modifiers
 )('div');
 ```
 
-See the Pen [Block "panel" shares modifier "inverted" with its elements](https://codepen.io/redneckz/pen/vmrRvN)
+See the Pen [Element with transparently applied modifier of block](https://codepen.io/redneckz/pen/GQEYrz)
 on [CodePen](http://codepen.io)
 
 ## Modular CSS
 
 ```jsx
+import {block, pick} from '@redneckz/react-bem-helper';
 import styles from './panel.scss';
 
 const SomeButton = block(
     'some-button',
-     // Component props to block modifiers transducer
-    ({disabled}) => ({disabled}),
-    {styles} // Can be passed as second argument
+    pick(['disabled']),
+    {styles}
 )('button');
 ```
 
-Styles bound to block will be applied to its elements.
-
-## Modifier component
-
-Some times it's useful to define separate JSX artifacts for particular modifiers.
+Styles mapping can be applied as second argument:
 
 ```jsx
 const SomeButton = block(
     'some-button',
-    ({icon}) => ({icon})
-)(
-    'button', // default component (no modifiers applied)
-    modifier('icon')(({className, icon}) => (
-        <svg
-            className={className}
-            width={SIZE} height={SIZE}
-            viewBox={`0 0 ${SIZE} ${SIZE}`}
-        >
-            <Group><path d={icon} /></Group>
-        </svg>
-    ))
-);
+    {styles}
+)('button');
+```
+
+Styles bound to block cover its elements.
+
+## Modifier component
+
+Sometimes it is useful to define separate components for particular modifiers.
+
+```jsx
+import {block, modifier, pick, is} from '@redneckz/react-bem-helper';
+
+@block(
+    'some-button',
+    pick(['circle', 'disabled'])
+)
+@modifier(
+    is('circle'), // Predicate (function that returns true or false)
+    CircleButton  // Modified component
+)
+class SomeButton extends React.PureComponent {
+    render() {
+        const {className, disabled, onClick} = this.props;
+        return (
+            <input
+                type="button"
+                className={className}
+                disabled={disabled}
+                onClick={onClick}
+            />
+        );
+    }
+}
 ```
 
 ```jsx
-const Group = element('group')('g');
+const CircleButton = ({className, disabled, onClick}) => (
+    <svg width="32" height="32" viewBox="0 0 100 100">
+        <circle
+            className={className}
+            cx="50" cy="50" r="45"
+            fill={disabled ? 'gray' : 'green'}
+            onClick={disabled && onClick}
+        />
+    </svg>
+);
 ```
 
-See the Pen [Block "some-button" with modifier component "some-button--icon"](https://codepen.io/redneckz/pen/QvZzWE)
+See the Pen [Modifier component](https://codepen.io/redneckz/pen/BYZqvN)
 on [CodePen](http://codepen.io)
 
 ## Steps
@@ -283,7 +326,6 @@ import {Config} from '@redneckz/react-bem-helper';
 
 Config.ELEMENT_SEPARATOR = '__';
 Config.MODIFIER_SEPARATOR = '--';
-Config.ASSERTION_ENABLED = process.env.NODE_ENV === 'development';
 Config.COMPONENT_BASE_CLASS = React.PureComponent;
 ```
 

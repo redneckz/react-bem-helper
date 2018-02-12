@@ -6,6 +6,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.0] - 2018-03-12
+
+### Fixed
+
+- Issues related to React 16
+
+### Added
+
+- "pick" utility to define simple mapping from props to modifiers
+- Modifier predicates to define separate components for particular modifiers
+
+### Changed
+
+- *\@modifier* decorator is totally refactored (breaking changes)
+- README updated according to refactoring
+- Dev. dependencies updated
+- Bundle optimized by means of [Rollup](https://github.com/rollup/rollup)
+
+### Removed
+
+- Lodash dependency
+
 ## [1.0.4] - 2017-05-30
 
 ### Fixed
@@ -66,8 +88,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - *Coveralls* integration
 - *README* with the very basic documentation
 
-[Unreleased]: https://github.com/redneckz/react-bem-helper/compare/v1.0.4...HEAD
+[Unreleased]: https://github.com/redneckz/react-bem-helper/compare/v1.1.0...HEAD
 [1.0.1]: https://github.com/redneckz/react-bem-helper/compare/v1.0.0...v1.0.1
 [1.0.2]: https://github.com/redneckz/react-bem-helper/compare/v1.0.1...v1.0.2
 [1.0.3]: https://github.com/redneckz/react-bem-helper/compare/v1.0.2...v1.0.3
 [1.0.4]: https://github.com/redneckz/react-bem-helper/compare/v1.0.3...v1.0.4
+[1.1.0]: https://github.com/redneckz/react-bem-helper/compare/v1.0.4...v1.1.0
