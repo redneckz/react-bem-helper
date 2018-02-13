@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Fixed
+- README "Modifier component" section
+
 ## [1.1.1] - 2018-03-13
 
 ### Fixed
@@ -26,7 +29,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 
 - *\@modifier* decorator is totally refactored (breaking changes)
-- README updated according to refactoring
+- *README* updated according to refactoring
 - Dev. dependencies updated
 - Bundle optimized by means of [Rollup](https://github.com/rollup/rollup)
 
@@ -43,7 +46,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- README extended with methodological section
+- *README* extended with methodological section
 - *VersionEye* integration
 
 ### Changed

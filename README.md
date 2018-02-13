@@ -278,6 +278,7 @@ class SomeButton extends React.PureComponent {
                 className={className}
                 disabled={disabled}
                 onClick={onClick}
+                value="Button"
             />
         );
     }
@@ -285,16 +286,17 @@ class SomeButton extends React.PureComponent {
 ```
 
 ```jsx
-const CircleButton = ({className, disabled, onClick}) => (
-    <svg width="32" height="32" viewBox="0 0 100 100">
-        <circle
-            className={className}
-            cx="50" cy="50" r="45"
-            fill={disabled ? 'gray' : 'green'}
-            onClick={disabled && onClick}
-        />
-    </svg>
-);
+function CircleButton({className, disabled, onClick}) {
+    return (
+        <svg className={className} width="32" height="32" viewBox="0 0 100 100">
+            <circle
+                cx="50" cy="50" r="45"
+                fill={disabled ? 'gray' : 'green'}
+                onClick={!disabled && onClick}
+            />
+        </svg>
+    );
+}
 ```
 
 See the Pen [Modifier component](https://codepen.io/redneckz/pen/BYZqvN)
