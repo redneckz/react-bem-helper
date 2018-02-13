@@ -35,25 +35,24 @@ export function block(blockName, mapPropsToModifiers, options) {
     const base = baseBlock(blockName, mapPropsToModifiers, options);
     const {styles} = options || {};
     return (BlockComponent) => {
-        const BlockWrapper = base(
-            class extends Config.COMPONENT_BASE_CLASS {
-                getChildContext() {
-                    return {
-                        blockName,
-                        blockModifiers: this.props['data-modifiers'],
-                        blockStyles: styles
-                    };
-                }
-                render() {
-                    return React.createElement(BlockComponent, this.props);
-                }
+        class BlockWrapper extends Config.COMPONENT_BASE_CLASS {
+            getChildContext() {
+                return {
+                    blockName,
+                    blockModifiers: this.props['data-modifiers'],
+                    blockStyles: styles
+                };
             }
-        );
-        Object.assign(BlockComponent, {
-            element: BlockWrapper.element
-        });
+            render() {
+                return React.createElement(BlockComponent, this.props);
+            }
+        }
         BlockWrapper.displayName = `block-with-context(${blockName})`;
         BlockWrapper.childContextTypes = blockContextTypes;
-        return BlockWrapper;
+        const BaseWrapper = base(BlockWrapper);
+        Object.assign(BlockComponent, {
+            element: BaseWrapper.element
+        });
+        return BaseWrapper;
     };
 }

@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [1.1.1] - 2018-03-13
+
+### Fixed
+
+- Critical issue with block context propagation
+
 ## [1.1.0] - 2018-03-12
 
 ### Fixed
@@ -94,3 +100,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 [1.0.3]: https://github.com/redneckz/react-bem-helper/compare/v1.0.2...v1.0.3
 [1.0.4]: https://github.com/redneckz/react-bem-helper/compare/v1.0.3...v1.0.4
 [1.1.0]: https://github.com/redneckz/react-bem-helper/compare/v1.0.4...v1.1.0
+[1.1.1]: https://github.com/redneckz/react-bem-helper/compare/v1.1.0...v1.1.1
