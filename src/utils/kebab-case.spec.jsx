@@ -3,7 +3,7 @@ import {kebabCase} from './kebab-case';
 const SEP = '*/+ ^%$#@!&*()~-{}[];:,<>.\t\n\r';
 
 describe('kebabCase', () => {
-    it('should transform camelCase string to kebab-case string', () => {
+    it('should transform camelCase strings to kebab-case', () => {
         expect(kebabCase('foo')).toBe('foo');
         expect(kebabCase('fooBar')).toBe('foo-bar');
         expect(kebabCase('fooBarBaz')).toBe('foo-bar-baz');
@@ -15,13 +15,13 @@ describe('kebabCase', () => {
         expect(kebabCase('FOoBArBAz')).toBe('foo-bar-baz');
     });
 
-    it('should transform pascalCase string to kebab-case string', () => {
+    it('should transform pascalCase strings to kebab-case', () => {
         expect(kebabCase('Foo')).toBe('foo');
         expect(kebabCase('FooBar')).toBe('foo-bar');
         expect(kebabCase('FooBarBaz')).toBe('foo-bar-baz');
     });
 
-    it('should leave kebab-case string as is (unchanged)', () => {
+    it('should leave kebab-case strings as is (unchanged)', () => {
         expect(kebabCase('foo-bar')).toBe('foo-bar');
         expect(kebabCase('foo-bar-baz')).toBe('foo-bar-baz');
     });
@@ -47,9 +47,15 @@ describe('kebabCase', () => {
         expect(kebabCase('')).toBe('');
     });
 
-    it('should transform nil value to empty string', () => {
+    it('should transform nil values to empty string', () => {
         expect(kebabCase(undefined)).toBe('');
         expect(kebabCase(null)).toBe('');
         expect(kebabCase()).toBe('');
+    });
+
+    it('should transform non-string values to string', () => {
+        expect(kebabCase(true)).toBe('true');
+        expect(kebabCase(123)).toBe('123');
+        expect(kebabCase({})).toBe('object-object');
     });
 });

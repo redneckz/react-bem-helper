@@ -6,7 +6,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+### Added
+
+- Tests for "kebab-case" utility (to increase coverage)
+
 ### Fixed
+
 - README "Modifier component" section
 
 ## [1.1.1] - 2018-03-13
