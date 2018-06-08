@@ -6,13 +6,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.0] - 2018-06-08
+
 ### Added
 
-- Tests for "kebab-case" utility (to increase coverage)
+- ☆ Migration to React 16.4 (context) ☆
+- ☆ BEM factory to share context between blocks and elements ☆
+- ☆ Flow typings ☆
+- New build script based on "rollup"
+- Enumerable modifiers support
+- Tags namespace to declare DOM components
 
-### Fixed
+### Changed
 
-- README "Modifier component" section
+- Renamed Config to BEMConfig
+
+### Removed
+
+- JSDocs
+- plainBlock (according to new context API)
 
 ## [1.1.1] - 2018-03-13
 
@@ -102,10 +114,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 - *Coveralls* integration
 - *README* with the very basic documentation
 
-[Unreleased]: https://github.com/redneckz/react-bem-helper/compare/v1.1.0...HEAD
+[Unreleased]: https://github.com/redneckz/react-bem-helper/compare/v2.0.0...HEAD
 [1.0.1]: https://github.com/redneckz/react-bem-helper/compare/v1.0.0...v1.0.1
 [1.0.2]: https://github.com/redneckz/react-bem-helper/compare/v1.0.1...v1.0.2
 [1.0.3]: https://github.com/redneckz/react-bem-helper/compare/v1.0.2...v1.0.3
 [1.0.4]: https://github.com/redneckz/react-bem-helper/compare/v1.0.3...v1.0.4
 [1.1.0]: https://github.com/redneckz/react-bem-helper/compare/v1.0.4...v1.1.0
 [1.1.1]: https://github.com/redneckz/react-bem-helper/compare/v1.1.0...v1.1.1
+[2.0.0]: https://github.com/redneckz/react-bem-helper/compare/v1.1.1...v2.0.0

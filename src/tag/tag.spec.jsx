@@ -1,6 +1,7 @@
+// @flow
 import React from 'react';
 import ReactShallowRenderer from 'react-test-renderer/shallow';
-import {tag, div, span, form, button, input, label, textarea} from './tag';
+import { tag, div, span, form, button, input, label, textarea } from './tag';
 
 describe('[tag] factory function', () => {
     let renderer;
@@ -10,7 +11,7 @@ describe('[tag] factory function', () => {
 
     it('should create DOM component with provided tag name', () => {
         const tagName = 'foo';
-        const Foo = tag(tagName);
+        const Foo = tag(tagName)({});
         renderer.render(<Foo />);
         const foo = renderer.getRenderOutput();
         expect(foo.type).toBe(tagName);
@@ -20,9 +21,9 @@ describe('[tag] factory function', () => {
         const attrs = {
             id: 'bar',
             lang: 'ru',
-            title: 'Bar'
+            title: 'Bar',
         };
-        const Foo = tag('foo', attrs);
+        const Foo = tag('foo')(attrs);
         renderer.render(<Foo />);
         const foo = renderer.getRenderOutput();
         expect(foo.props).toEqual(attrs);
@@ -32,22 +33,22 @@ describe('[tag] factory function', () => {
         const attrs = {
             id: 'bar',
             lang: 'ru',
-            title: 'Bar'
+            title: 'Bar',
         };
-        const Foo = tag('foo', attrs);
+        const Foo = tag('foo')(attrs);
         renderer.render(<Foo id="123" lang="en" quux="quux" />);
         const foo = renderer.getRenderOutput();
         expect(foo.props).toEqual({
             ...attrs,
             id: '123',
-            lang: 'en'
+            lang: 'en',
             // quux is out of the whitelist
         });
     });
 
     describe('[div]', () => {
         it('should produce "div"', () => {
-            const Div = div();
+            const Div = div({});
             renderer.render(<Div />);
             expect(renderer.getRenderOutput().type).toBe('div');
         });
@@ -55,7 +56,7 @@ describe('[tag] factory function', () => {
 
     describe('[span]', () => {
         it('should produce "span"', () => {
-            const Span = span();
+            const Span = span({});
             renderer.render(<Span />);
             expect(renderer.getRenderOutput().type).toBe('span');
         });
@@ -63,7 +64,7 @@ describe('[tag] factory function', () => {
 
     describe('[form]', () => {
         it('should produce "form"', () => {
-            const Form = form();
+            const Form = form({});
             renderer.render(<Form />);
             expect(renderer.getRenderOutput().type).toBe('form');
         });
@@ -71,7 +72,7 @@ describe('[tag] factory function', () => {
 
     describe('[button]', () => {
         it('should produce "button" with attribute "type" equal to "button" and attribute "onClick"', () => {
-            const Button = button();
+            const Button = button({});
             renderer.render(<Button />);
             const out = renderer.getRenderOutput();
             expect(out.type).toBe('button');
@@ -82,21 +83,22 @@ describe('[tag] factory function', () => {
 
     describe('[input]', () => {
         it('should produce "input" with attributes "type", "name", "value"', () => {
-            const Input = input();
+            const Input = input({});
             renderer.render(<Input />);
             const out = renderer.getRenderOutput();
             expect(out.type).toBe('input');
-            expect(out.props).toEqual({
-                type: 'text',
-                name: '',
-                value: ''
-            });
+            expect(out.props.type).toBe('text');
+            expect(out.props.name).toBe('');
+            expect(out.props.value).toBe('');
+            expect(out.props.onChange).toBeInstanceOf(Function);
+            expect(out.props.onFocus).toBeInstanceOf(Function);
+            expect(out.props.onBlur).toBeInstanceOf(Function);
         });
     });
 
     describe('[label]', () => {
         it('should produce "label" with "htmlFor" attribute', () => {
-            const Label = label();
+            const Label = label({});
             renderer.render(<Label />);
             const out = renderer.getRenderOutput();
             expect(out.type).toBe('label');
@@ -106,14 +108,13 @@ describe('[tag] factory function', () => {
 
     describe('[textarea]', () => {
         it('should produce "textarea" with empty "name" and "rows" attribute equal to 2 (HTML5 spec)', () => {
-            const Textarea = textarea();
+            const Textarea = textarea({});
             renderer.render(<Textarea />);
             const out = renderer.getRenderOutput();
             expect(out.type).toBe('textarea');
-            expect(out.props).toEqual({
-                name: '',
-                rows: 2 // HTML5 spec
-            });
+            expect(out.props.name).toBe('');
+            expect(out.props.rows).toBe(2); // HTML5 spec
+            expect(out.props.onChange).toBeDefined();
         });
     });
 });

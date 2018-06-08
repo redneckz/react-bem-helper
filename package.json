@@ -16,9 +16,9 @@
     "url": "https://github.com/redneckz/react-bem-helper/issues"
   },
   "homepage": "https://github.com/redneckz/react-bem-helper",
-  "main": "lib/react-bem-helper.js",
-  "module": "es/react-bem-helper.js",
-  "browser": "dist/react-bem-helper.min.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "browser": "dist/index.min.js",
   "files": [
     "src",
     "lib",
@@ -26,50 +26,58 @@
     "dist"
   ],
   "peerDependencies": {
-    "prop-types": "^15.6.0",
-    "react": "^0.14.0 || ^15.0.0-0 || ^16.0.0-0"
+    "react": "^16.4.0-0"
   },
   "dependencies": {
-    "classnames": "^2.2.5"
+    "classnames": "~2.2.6"
   },
   "devDependencies": {
     "babel-cli": "~6.26.0",
-    "babel-core": "~6.26.0",
+    "babel-core": "~6.26.3",
     "babel-eslint": "~8.2.1",
-    "babel-jest": "~22.1.0",
+    "babel-jest": "~23.0.1",
     "babel-plugin-external-helpers": "~6.22.0",
+    "babel-plugin-transform-flow-comments": "~6.22.0",
+    "babel-plugin-transform-flow-strip-types": "~6.22.0",
     "babel-plugin-transform-object-rest-spread": "~6.26.0",
-    "babel-preset-env": "~1.6.1",
+    "babel-preset-env": "~1.7.0",
     "babel-preset-react": "~6.24.1",
-    "coveralls": "~3.0.0",
-    "cross-env": "~5.1.3",
+    "coveralls": "~3.0.1",
+    "cross-env": "~5.1.6",
     "enzyme": "~3.3.0",
     "enzyme-adapter-react-16": "~1.1.1",
-    "eslint": "~4.16.0",
+    "eslint": "~4.19.1",
     "eslint-config-airbnb": "~16.1.0",
-    "eslint-plugin-import": "~2.8.0",
+    "eslint-plugin-flowtype": "~2.49.3",
+    "eslint-plugin-import": "~2.12.0",
     "eslint-plugin-jsx-a11y": "~6.0.2",
-    "eslint-plugin-react": "~7.6.1",
-    "jest-cli": "~22.1.4",
+    "eslint-plugin-react": "~7.9.1",
+    "flow-bin": "~0.74.0",
+    "flow-copy-source": "~2.0.0",
+    "flow-typed": "~2.4.0",
+    "jest-cli": "~23.1.0",
     "prop-types": "~15.6.0",
-    "react": "~16.2.0",
-    "react-dom": "~16.2.0",
-    "react-test-renderer": "~16.2.0",
+    "react": "~16.4.0",
+    "react-dom": "~16.4.0",
+    "react-test-renderer": "~16.4.0",
     "rimraf": "~2.6.1",
-    "rollup": "~0.55.1",
-    "rollup-plugin-babel": "~3.0.3",
-    "rollup-plugin-commonjs": "~8.3.0",
-    "rollup-plugin-node-resolve": "~3.0.2",
-    "rollup-plugin-uglify": "~3.0.0"
+    "rollup": "~0.60.4",
+    "rollup-plugin-babel": "~3.0.4",
+    "rollup-plugin-commonjs": "~9.1.3",
+    "rollup-plugin-node-resolve": "~3.3.0",
+    "rollup-plugin-uglify": "~4.0.0"
   },
   "scripts": {
     "prepublish": "npm run build",
     "prebuild": "npm run eslint && npm run jest && npm run clean",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
-    "build:commonjs": "cross-env NODE_ENV=cjs rollup -c -o lib/react-bem-helper.js",
-    "build:es": "cross-env NODE_ENV=es rollup -c -o es/react-bem-helper.js",
-    "build:umd": "cross-env NODE_ENV=development rollup -c -o dist/react-bem-helper.js",
-    "build:umd:min": "cross-env NODE_ENV=production rollup -c -o dist/react-bem-helper.min.js",
+    "build:commonjs":
+      "rollup --environment NODE_ENV:cjs -c -o lib/index.js && npm run build:flow -- lib",
+    "build:es":
+      "rollup --environment NODE_ENV:es -c -o es/index.js && npm run build:flow -- es",
+    "build:umd": "rollup --environment NODE_ENV:development -c -o dist/index.js",
+    "build:umd:min": "rollup --environment NODE_ENV:production -c -o dist/index.min.js",
+    "build:flow": "flow-copy-source --ignore **/*.spec.* src",
     "clean": "rimraf lib es dist coverage",
     "pretest": "npm run eslint",
     "test": "npm run jest && npm run coveralls",
@@ -86,6 +94,7 @@
     "coverageDirectory": "<rootDir>/coverage",
     "coverageReporters": [
       "lcov"
-    ]
+    ],
+    "setupTestFrameworkScriptFile": "<rootDir>/jest-setup.js"
   }
 }

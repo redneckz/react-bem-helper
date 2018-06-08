@@ -1,18 +1,13 @@
-import {Config} from '../config';
-import {kebabCase} from '../utils';
+// @flow
+import { BEMConfig } from '../bem-config';
+import { kebabCase } from '../utils';
 
-/**
- * @typedef {string} Modifier
- * @typedef {string} ClassName
- */
+type ModifiersToClassNames = (modifiers?: string[]) => string[];
 
 /**
  * Computes class names of block regarding active modifiers
- *
- * @param {string} blockName
- * @return {Array(Modifier) -> Array(ClassName)}
  */
-export function blockClassNames(blockName) {
+export function blockClassNames(blockName?: string): ModifiersToClassNames {
     if (!blockName) {
         throw new TypeError('[BEM] Block name should be defined');
     }
@@ -21,26 +16,32 @@ export function blockClassNames(blockName) {
 
 /**
  * Computes class names of element regarding active modifiers
- *
- * @param {string} blockName
- * @param {string} elementName
- * @return {Array(Modifier) -> ClassName}
  */
-export function elementClassNames(blockName, elementName) {
+export function elementClassNames(blockName?: string, elementName?: string): ModifiersToClassNames {
     if (!blockName) {
         throw new TypeError('[BEM] Block name should be defined');
     }
     if (!elementName) {
         throw new TypeError('[BEM] Element name should be defined');
     }
-    return modifiedClassNames(`${blockName}${Config.ELEMENT_SEPARATOR}${elementName}`);
+    return modifiedClassNames(`${blockName}${BEMConfig.ELEMENT_SEPARATOR}${elementName}`);
 }
 
-function modifiedClassNames(baseName) {
-    return (modifiers = []) => {
+function modifiedClassNames(baseName: string): ModifiersToClassNames {
+    return (modifiers) => {
         const modifiersClassNames = modifiers
-            .filter(Boolean)
-            .map(mod => `${baseName}${Config.MODIFIER_SEPARATOR}${kebabCase(mod)}`);
+            ? modifiers
+                .filter(Boolean)
+                .map(adjustModifier)
+                .map(mod => `${baseName}${BEMConfig.MODIFIER_SEPARATOR}${mod}`)
+            : [];
         return [baseName].concat(modifiersClassNames);
     };
+}
+
+function adjustModifier(modifier: string): string {
+    return modifier
+        .split(BEMConfig.MODIFIER_SEPARATOR)
+        .map(kebabCase)
+        .join(BEMConfig.MODIFIER_SEPARATOR);
 }

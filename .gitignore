@@ -6,3 +6,4 @@ coverage/
 /npm-debug.log
 .cache/*
 !.cache/.gitkeep
+yarn-error.log

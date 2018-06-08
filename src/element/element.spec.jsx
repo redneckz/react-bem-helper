@@ -1,141 +1,145 @@
+// @flow
 import React from 'react';
-import ReactShallowRenderer from 'react-test-renderer/shallow';
-import {Config} from '../config';
-import {element} from './element';
+import { mount } from 'enzyme';
+import { BEMConfig } from '../bem-config';
+import { element } from './element';
+import type { Component } from '../bem-helper-types';
+import type { BlockContext } from '../create-block-context';
 
-const {ELEMENT_SEPARATOR, MODIFIER_SEPARATOR} = Config;
+const { ELEMENT_SEPARATOR, MODIFIER_SEPARATOR } = BEMConfig;
 
 describe('BEM element decorator', () => {
-    let renderer;
-    let Bar;
+    type Props = {|
+        className?: string,
+        baz?: string,
+        quux?: boolean,
+        plugh?: boolean,
+    |};
+
+    let Bar: Component<Props>;
+
     beforeEach(() => {
-        renderer = new ReactShallowRenderer();
         Bar = () => <div />;
     });
 
     it('should inject [className] property containing element name', () => {
-        const WrappedBar = element('bar')(Bar);
-        renderer.render(<WrappedBar />, {blockName: 'foo'});
-        const wrappedFooBar = renderer.getRenderOutput();
-        expect(wrappedFooBar.props.className).toBe(`foo${ELEMENT_SEPARATOR}bar`);
+        const WrappedBar = element(ctx())('bar')(Bar);
+        const wrappedFooBar = mount(<WrappedBar />);
+        expect(wrappedFooBar.find(Bar).prop('className')).toBe(`foo${ELEMENT_SEPARATOR}bar`);
     });
 
     it('should pass through all props except [className] and [data-modifiers]', () => {
-        const WrappedBar = element('bar')(Bar);
-        renderer.render(<WrappedBar quux />, {blockName: 'foo'});
-        const wrappedFooBar = renderer.getRenderOutput();
-        expect(wrappedFooBar.props.quux).toBe(true);
+        const WrappedBar = element(ctx())('bar')(Bar);
+        const wrappedFooBar = mount(<WrappedBar quux />);
+        expect(wrappedFooBar.find(Bar).prop('quux')).toBe(true);
     });
 
     it('should mixin provided [className] into resulting [className]', () => {
-        const WrappedBar = element('bar')(Bar);
-        renderer.render(<WrappedBar className="quux" />, {blockName: 'foo'});
-        const wrappedFooBar = renderer.getRenderOutput();
-        expect(wrappedFooBar.props.className).toBe(`foo${ELEMENT_SEPARATOR}bar quux`);
+        const WrappedBar = element(ctx())('bar')(Bar);
+        const wrappedFooBar = mount(<WrappedBar className="quux" />);
+        expect(wrappedFooBar.find(Bar).prop('className')).toBe(`foo${ELEMENT_SEPARATOR}bar quux`);
     });
 
     it('should map properties to modifiers and mixin corresponding classes to [className]', () => {
-        const WrappedBar = element(
+        const WrappedBar = element(ctx())(
             'bar',
-            ({baz}) => baz // properties to modifiers
+            ({ baz }) => baz, // properties to modifiers
         )(Bar);
-        renderer.render(<WrappedBar baz="quux" />, {blockName: 'foo'});
-        const wrappedFooBar = renderer.getRenderOutput();
+        const wrappedFooBar = mount(<WrappedBar baz="quux" />);
         const baseName = `foo${ELEMENT_SEPARATOR}bar`;
-        expect(wrappedFooBar.props.className).toBe(
-            `${baseName} ${baseName}${MODIFIER_SEPARATOR}quux`
+        expect(wrappedFooBar.find(Bar).prop('className')).toBe(
+            `${baseName} ${baseName}${MODIFIER_SEPARATOR}quux`,
         );
     });
 
     it('should support "classnames" compatible structures as modifier', () => {
-        const WrappedBar = element(
+        const WrappedBar = element(ctx())(
             'bar',
-            ({baz, plugh}) => [baz, {plugh}] // properties to modifiers
+            ({ baz, plugh }) => [baz, { plugh }], // properties to modifiers
         )(Bar);
-        renderer.render(<WrappedBar baz="quux" plugh />, {blockName: 'foo'});
-        const wrappedFooBar = renderer.getRenderOutput();
+        const wrappedFooBar = mount(<WrappedBar baz="quux" plugh />);
         const baseName = `foo${ELEMENT_SEPARATOR}bar`;
-        expect(wrappedFooBar.props.className).toBe(
-            `${baseName} ${baseName}${MODIFIER_SEPARATOR}quux ${baseName}${MODIFIER_SEPARATOR}plugh`
+        expect(wrappedFooBar.find(Bar).prop('className')).toBe(
+            `${baseName} ${baseName}${MODIFIER_SEPARATOR}quux ${baseName}${MODIFIER_SEPARATOR}plugh`,
         );
     });
 
     it('should map properties to modifiers and inject [data-modifiers] property with active modifiers', () => {
-        const WrappedBar = element(
+        const WrappedBar = element(ctx())(
             'bar',
-            ({baz, plugh}) => [baz, {plugh}] // properties to modifiers
+            ({ baz, plugh }) => [baz, { plugh }], // properties to modifiers
         )(Bar);
-        renderer.render(<WrappedBar baz="quux" plugh />, {blockName: 'foo'});
-        const wrappedFooBar = renderer.getRenderOutput();
-        expect(wrappedFooBar.props['data-modifiers']).toBe('quux plugh');
+        const wrappedFooBar = mount(<WrappedBar baz="quux" plugh />);
+        expect(wrappedFooBar.find(Bar).prop('data-modifiers')).toBe('quux plugh');
     });
 
     it('should pass block modifiers to [mapPropsToModifiers] function as second argument', () => {
+        // See "blockModifiers" defined in mock above
         const mapPropsToModifiers = jest.fn().mockReturnValue('quux');
-        const WrappedBar = element('bar', mapPropsToModifiers)(Bar);
-        renderer.render(<WrappedBar />, {
-            blockName: 'foo',
-            blockModifiers: 'xyzzy plugh'
-        });
+        const WrappedBar = element(ctx())('bar', mapPropsToModifiers)(Bar);
+        mount(<WrappedBar />);
         expect(mapPropsToModifiers).toBeCalledWith({}, ['xyzzy', 'plugh']);
     });
 
     describe('which wraps a component with modular CSS', () => {
-        const styles = {
-            [`foo${ELEMENT_SEPARATOR}bar`]: 'foo#123',
-            [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}quux`]: 'quux#456'
-        };
-
         it('should use class names mapping from from component`s context', () => {
-            const WrappedBar = element(
-                'bar',
-                ({baz}) => baz
-            )(Bar);
-            renderer.render(<WrappedBar baz="quux" />, {
-                blockName: 'foo',
-                blockStyles: styles
-            });
-            const wrappedFooBar = renderer.getRenderOutput();
-            expect(wrappedFooBar.props.className).toBe('foo#123 quux#456');
+            // See "blockStyles" defined in mock above
+            const WrappedZxc = element(ctx())('zxc', ({ baz }) => baz)(Bar);
+            const wrappedFooZxc = mount(<WrappedZxc baz="quux" />);
+            expect(wrappedFooZxc.find(Bar).prop('className')).toBe('zxc#123 quux#456');
         });
 
+        const styles = {
+            [`foo${ELEMENT_SEPARATOR}bar`]: 'bar#777',
+            [`foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}quux`]: 'quux#999',
+        };
+
         it('should use class names mapping from [options] which is passed as third arg', () => {
-            const WrappedBar = element(
+            const WrappedBar = element(ctx())(
                 'bar',
-                ({baz}) => baz,
-                {styles} // options
+                ({ baz }) => baz,
+                { styles }, // options
             )(Bar);
-            renderer.render(<WrappedBar baz="quux" />, {blockName: 'foo'});
-            const wrappedFooBar = renderer.getRenderOutput();
-            expect(wrappedFooBar.props.className).toBe('foo#123 quux#456');
+            const wrappedFooBar = mount(<WrappedBar baz="quux" />);
+            expect(wrappedFooBar.find(Bar).prop('className')).toBe('bar#777 quux#999');
         });
 
         it('should use class names mapping from [options] which is passed as second arg', () => {
-            const WrappedBar = element(
+            const WrappedBar = element(ctx())(
                 'bar',
-                {styles} // options
+                undefined,
+                { styles }, // options
             )(Bar);
-            renderer.render(<WrappedBar />, {blockName: 'foo'});
-            const wrappedFooBar = renderer.getRenderOutput();
-            expect(wrappedFooBar.props.className).toBe('foo#123');
+            const wrappedFooBar = mount(<WrappedBar />);
+            expect(wrappedFooBar.find(Bar).prop('className')).toBe('bar#777');
         });
     });
 
     it('should support DOM components decoration', () => {
-        const WrappedBar = element('bar')('div');
-        renderer.render(<WrappedBar />, {blockName: 'foo'});
-        const wrappedFooBar = renderer.getRenderOutput();
-        expect(wrappedFooBar.type).toBe('div');
-        expect(wrappedFooBar.props.className).toBe(`foo${ELEMENT_SEPARATOR}bar`);
+        const WrappedBar = element(ctx())('bar')('div');
+        const wrappedFooBar = mount(<WrappedBar />);
+        const div = wrappedFooBar.find('div');
+        expect(div.length).toBe(1);
+        expect(div.prop('className')).toBe(`foo${ELEMENT_SEPARATOR}bar`);
     });
 
     it('should declare [displayName] containing element name', () => {
-        const WrappedBar = element('bar')(Bar);
+        const WrappedBar = element(ctx())('bar')(Bar);
         expect(WrappedBar.displayName).toBe('element(bar)');
     });
-
-    it('should fail in case of empty context', () => {
-        const WrappedBar = element('bar')(Bar);
-        expect(() => renderer.render(<WrappedBar />)).toThrow(/^\[BEM\].+/);
-    });
 });
+
+function ctx(): BlockContext {
+    const blockModifiers = 'xyzzy plugh';
+    return {
+        name: 'foo',
+        styles: {
+            foo__zxc: 'zxc#123',
+            'foo__zxc--quux': 'quux#456',
+        },
+        modifiersContext: {
+            Provider: () => null,
+            Consumer: ({ children }: any) => children(blockModifiers) || null,
+        },
+    };
+}

@@ -1,44 +1,63 @@
+// @flow
 import React from 'react';
-import ReactShallowRenderer from 'react-test-renderer/shallow';
-import {Config} from '../config';
-import {block, plainBlock} from '../block';
-import {element} from './element';
+import { mount } from 'enzyme';
+import { BEMConfig } from '../bem-config';
+import { block } from '../block';
+import { element, transparent } from './element';
+import type { Component } from '../bem-helper-types';
+import type { BlockContext } from '../create-block-context';
 
-const {ELEMENT_SEPARATOR} = Config;
+const { ELEMENT_SEPARATOR, MODIFIER_SEPARATOR } = BEMConfig;
 
 describe('BEM element decorator', () => {
-    let renderer;
-    let Bar;
+    let Foo: Component<{ className?: string, quux?: boolean, children?: React$Node }>;
+    let Bar: Component<{ className?: string }>;
+
     beforeEach(() => {
-        renderer = new ReactShallowRenderer();
-        Bar = () => <div />;
+        Foo = ({ className, children }) => <div className={className}>{children}</div>;
+        Bar = ({ className }) => <div className={className} />;
     });
 
-    it('should use block name from static context provided by BEM block', () => {
-        const Foo = block('foo')(() => <div />);
-        const WrappedBar = Foo.element('bar')(Bar);
-        renderer.render(<WrappedBar />, {blockName: 'quux'});
-        const wrappedFooBar = renderer.getRenderOutput();
-        expect(wrappedFooBar.props.className).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
-    });
-
-    it('should use block name from static context provided by BEM plain block', () => {
-        const Foo = plainBlock('foo')(() => <div />);
-        const WrappedBar = Foo.element('bar')(Bar);
-        renderer.render(<WrappedBar />, {blockName: 'quux'});
-        const wrappedFooBar = renderer.getRenderOutput();
-        expect(wrappedFooBar.props.className).toEqual(`foo${ELEMENT_SEPARATOR}bar`);
+    it('should apply block modifiers to "transparent" element', () => {
+        const context = ctx();
+        const WrappedFoo = block(context)(({ quux }) => ({ quux }))(Foo);
+        const WrappedBar = element(context)('bar', transparent())(Bar);
+        const wrappedFooBar = mount(
+            <WrappedFoo quux>
+                <WrappedBar />
+            </WrappedFoo>,
+        );
+        expect(wrappedFooBar.find(Bar).prop('className')).toBe(
+            `foo${ELEMENT_SEPARATOR}bar foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}quux`,
+        );
     });
 
     describe('applied to some BEM block (BEM mixin)', () => {
         it('should NOT fail with assertion error', () => {
-            const OtherFoo = block('other-foo')(() => <div />);
-            expect(() => element('bar')(OtherFoo)).not.toThrow();
-        });
-
-        it('(defined as plain block should NOT fail with assertion error', () => {
-            const OtherFoo = plainBlock('other-foo')(() => <div />);
-            expect(() => element('bar')(OtherFoo)).not.toThrow();
+            const OtherFoo = block(ctx())()(Foo);
+            expect(() => {
+                const WrappedBar = element(ctx())('bar')(OtherFoo);
+                mount(
+                    <OtherFoo>
+                        <WrappedBar />
+                    </OtherFoo>,
+                );
+            }).not.toThrow();
         });
     });
 });
+
+function ctx(): BlockContext {
+    let mods;
+    return {
+        name: 'foo',
+        styles: undefined,
+        modifiersContext: {
+            Provider: ({ value, children }: any) => {
+                mods = value;
+                return children;
+            },
+            Consumer: ({ children }: any) => children(mods) || null,
+        },
+    };
+}

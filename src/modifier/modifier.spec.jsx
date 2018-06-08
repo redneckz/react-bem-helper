@@ -1,15 +1,18 @@
+// @flow
 import React from 'react';
 import ReactShallowRenderer from 'react-test-renderer/shallow';
-import {modifier} from './modifier';
+import type { Component } from '../bem-helper-types';
+import { modifier } from './modifier';
 
 describe('BEM modifier decorator', () => {
+    let Foo: Component<{ 'data-modifiers'?: string }>;
+    let FooQuux: Component<{ 'data-modifiers'?: string }>;
     let renderer;
-    let Foo;
-    let FooQuux;
+
     beforeEach(() => {
-        renderer = new ReactShallowRenderer();
         Foo = () => <div />; // Decorated component
         FooQuux = () => <span />; // Modified component
+        renderer = new ReactShallowRenderer();
     });
 
     it('should "choose" decorated component if predicate evaluates to false', () => {
@@ -36,10 +39,10 @@ describe('BEM modifier decorator', () => {
     });
 
     it('should fail if no predicate provided', () => {
-        expect(() => modifier()).toThrow(TypeError);
+        expect(() => (modifier: any)()).toThrow(TypeError);
     });
 
     it('should fail if no modified component provided', () => {
-        expect(() => modifier(() => true)(FooQuux)).toThrow(TypeError);
+        expect(() => (modifier: any)(() => true)(FooQuux)).toThrow(TypeError);
     });
 });

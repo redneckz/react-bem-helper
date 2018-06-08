@@ -1,4 +1,5 @@
-import {is, startsWith, and, or, not} from './modifier-predicates';
+// @flow
+import { is, startsWith, and, or, not } from './modifier-predicates';
 
 describe('Modifier predicates', () => {
     describe('[is]', () => {
@@ -87,11 +88,6 @@ describe('Modifier predicates', () => {
             const modifiersList = ['quux', 'plugh'];
             expect(not(is('quux'))(modifiersList)).toBe(false);
             expect(not(is('abc'))(modifiersList)).toBe(true);
-        });
-
-        it('should fail if no predicate provided', () => {
-            const modifiersList = ['quux', 'plugh'];
-            expect(() => not()(modifiersList)).toThrow();
         });
     });
 });

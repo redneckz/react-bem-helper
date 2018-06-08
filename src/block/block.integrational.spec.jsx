@@ -1,35 +1,36 @@
+// @flow
 import React from 'react';
-import Enzyme from 'enzyme';
-import EnzymeAdapter from 'enzyme-adapter-react-16';
-import {block} from './block';
-import {element, transparent} from '../element';
-import {div} from '../tag';
-import {Config} from '../config';
-
-const {ELEMENT_SEPARATOR, MODIFIER_SEPARATOR} = Config;
-
-const {mount} = Enzyme;
-Enzyme.configure({adapter: new EnzymeAdapter()});
+import { mount } from 'enzyme';
+import { block } from './block';
+import type { BlockContext } from '../create-block-context';
 
 describe('BEM block decorator', () => {
-    it('should provide BEM element decorator bound to block', () => {
-        const Foo = () => null;
-        const WrappedFoo = block('foo')(Foo);
-        expect(Foo.element).toBeInstanceOf(Function);
-        expect(WrappedFoo.element).toBeInstanceOf(Function);
-    });
+    it('should provide block modifiers by means of context', () => {
+        const contextConsumer = jest.fn();
+        const context = ctx();
+        const { modifiersContext: ModifiersContext } = context;
 
-    describe('composed with BEM element', () => {
-        it('should provide block name, block modifiers and block styles by means of context', () => {
-            const Foo = div();
-            const WrappedFoo = block('foo', ({quux}) => ({quux}))(Foo);
-            const Bar = props => <div {...props} />;
-            const WrappedBar = element('bar', transparent())(Bar);
-            const wrappedFoo = mount(<WrappedFoo quux><WrappedBar /></WrappedFoo>);
-            const wrappedBar = wrappedFoo.find(Bar);
-            expect(wrappedBar.props().className).toBe(
-                `foo${ELEMENT_SEPARATOR}bar foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}quux`
-            );
-        });
+        const blockModifiers = 'quux';
+        const WrappedFoo = block(context)(() => blockModifiers)(() => (
+            <ModifiersContext.Consumer>{contextConsumer}</ModifiersContext.Consumer>
+        ));
+        mount(<WrappedFoo />);
+
+        expect(contextConsumer).toHaveBeenCalledWith(blockModifiers);
     });
 });
+
+function ctx(): BlockContext {
+    let mods;
+    return {
+        name: 'foo',
+        styles: undefined,
+        modifiersContext: {
+            Provider: ({ value, children }: any) => {
+                mods = value;
+                return children;
+            },
+            Consumer: ({ children }: any) => children(mods) || null,
+        },
+    };
+}

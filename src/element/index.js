@@ -1,1 +1,2 @@
-export {element, transparent} from './element';
+// @flow
+export { element, transparent } from './element';

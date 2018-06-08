@@ -1,7 +1,8 @@
-import {blockClassNames, elementClassNames} from './bem-naming-factory';
-import {Config} from '../config';
+// @flow
+import { blockClassNames, elementClassNames } from './bem-naming-factory';
+import { BEMConfig } from '../bem-config';
 
-const {ELEMENT_SEPARATOR, MODIFIER_SEPARATOR} = Config;
+const { ELEMENT_SEPARATOR, MODIFIER_SEPARATOR } = BEMConfig;
 
 describe('BEM naming factory', () => {
     describe('blockClassNames', () => {
@@ -12,7 +13,7 @@ describe('BEM naming factory', () => {
         it('should return block name and block name suffixed with modifier (if any)', () => {
             expect(blockClassNames('foo')(['quux'])).toEqual([
                 'foo',
-                `foo${MODIFIER_SEPARATOR}quux`
+                `foo${MODIFIER_SEPARATOR}quux`,
             ]);
         });
 
@@ -20,14 +21,14 @@ describe('BEM naming factory', () => {
             expect(blockClassNames('foo')(['quux', 'plugh'])).toEqual([
                 'foo',
                 `foo${MODIFIER_SEPARATOR}quux`,
-                `foo${MODIFIER_SEPARATOR}plugh`
+                `foo${MODIFIER_SEPARATOR}plugh`,
             ]);
         });
 
         it('should transform each modifier to kebab-case', () => {
             expect(blockClassNames('foo')(['QuuxPlugh'])).toEqual([
                 'foo',
-                `foo${MODIFIER_SEPARATOR}quux-plugh`
+                `foo${MODIFIER_SEPARATOR}quux-plugh`,
             ]);
         });
 
@@ -44,7 +45,7 @@ describe('BEM naming factory', () => {
         it('should return element name and element name suffixed with modifier (if any)', () => {
             expect(elementClassNames('foo', 'bar')(['quux'])).toEqual([
                 `foo${ELEMENT_SEPARATOR}bar`,
-                `foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}quux`
+                `foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}quux`,
             ]);
         });
 
@@ -52,14 +53,14 @@ describe('BEM naming factory', () => {
             expect(elementClassNames('foo', 'bar')(['quux', 'plugh'])).toEqual([
                 `foo${ELEMENT_SEPARATOR}bar`,
                 `foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}quux`,
-                `foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}plugh`
+                `foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}plugh`,
             ]);
         });
 
         it('should transform each modifier to kebab-case', () => {
             expect(elementClassNames('foo', 'bar')(['QuuxPlugh'])).toEqual([
                 `foo${ELEMENT_SEPARATOR}bar`,
-                `foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}quux-plugh`
+                `foo${ELEMENT_SEPARATOR}bar${MODIFIER_SEPARATOR}quux-plugh`,
             ]);
         });
 

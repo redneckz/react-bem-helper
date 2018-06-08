@@ -5,7 +5,10 @@
         ["env", {"loose": true}],
         "react"
       ],
-      "plugins": ["transform-object-rest-spread"]
+      "plugins": [
+        "transform-flow-comments",
+        "transform-object-rest-spread",
+      ]
     }
   }
 }

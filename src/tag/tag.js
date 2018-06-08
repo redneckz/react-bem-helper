@@ -1,48 +1,62 @@
+// @flow
 import React from 'react';
-import {pick} from '../utils';
+import type { DOMComponent } from '../bem-helper-types';
+import { pick } from '../utils';
+
+const KNOWN_KEYS = ['key', 'className', 'children'];
 
 /**
  * Since react@15.2.0 there is new mechanism for handling unknown props.
  * This factory function provides straighforward way to define React DOM component
  * with restricted list of attributes (whitelist)
- *
- * @param {string} tagName
- * @param {Object} [attrs] plain object with allowed attributes and their default values
- * @returns {React.Component} DOM component
  */
-export function tag(tagName, attrs = {}) {
-    const prune = pick(Object.keys(attrs));
-    function Tag({
-        key, className, children, ...props
-    }) {
-        return React.createElement(
-            tagName,
-            {
-                key,
-                className,
+export function tag(tagName: string): <Attrs: {}>(attrs?: Attrs) => DOMComponent<Attrs> {
+    return (attrs = {}) => {
+        const whitelist = KNOWN_KEYS.concat(Object.keys(attrs));
+        const prune = pick(whitelist);
+        const Tag = props =>
+            React.createElement(tagName, {
                 ...attrs,
-                ...prune(props)
-            },
-            children
-        );
-    }
-    Tag.displayName = `tag(${tagName})`;
-    return Tag;
+                ...prune(props),
+            });
+        Tag.displayName = `tag(${tagName})`;
+        return Tag;
+    };
 }
 
-export const div = attrs => tag('div', attrs);
-export const span = attrs => tag('span', attrs);
+export const div = tag('div');
+export const span = tag('span');
 
-export const form = attrs => tag('form', attrs);
-export const button = attrs => tag('button', {
-    type: 'button', onClick: () => {}, ...attrs
-});
-export const input = attrs => tag('input', {
-    type: 'text', name: '', value: '', ...attrs
-});
-export const label = attrs => tag('label', {
-    htmlFor: '', ...attrs
-});
-export const textarea = attrs => tag('textarea', {
-    name: '', rows: 2, ...attrs
-});
+export const form = tag('form');
+
+export const button = <Attrs: {}>(attrs?: Attrs): DOMComponent<Attrs> =>
+    tag('button')({
+        type: 'button',
+        onClick: () => {},
+        ...attrs,
+    });
+
+export const input = <Attrs: {}>(attrs?: Attrs): DOMComponent<Attrs> =>
+    tag('input')({
+        type: 'text',
+        name: '',
+        value: '',
+        onChange: () => {},
+        onFocus: () => {},
+        onBlur: () => {},
+        ...attrs,
+    });
+
+export const label = <Attrs: {}>(attrs?: Attrs): DOMComponent<Attrs> =>
+    tag('label')({
+        htmlFor: '',
+        ...attrs,
+    });
+
+export const textarea = <Attrs: {}>(attrs?: Attrs): DOMComponent<Attrs> =>
+    tag('textarea')({
+        name: '',
+        rows: 2,
+        onChange: () => {},
+        ...attrs,
+    });

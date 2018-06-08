@@ -1,1 +1,2 @@
-export {blockClassNames, elementClassNames} from './bem-naming-factory';
+// @flow
+export { blockClassNames, elementClassNames } from './bem-naming-factory';

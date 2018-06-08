@@ -1,15 +1,17 @@
-export function pick(keysList) {
-    if (!Array.isArray(keysList) || (keysList.length === 0)) {
-        return () => ({});
-    }
-    return (props) => {
-        const filteredProps = props
-            ? keysList
-                .filter(key => key in props)
-                .map(key => ({
-                    [key]: props[key]
-                }))
-            : [];
+// @flow
+type Optional = <V>(V) => V | void;
+
+export function pick<O: {}>(
+    keys?: string[] | null | void,
+): (obj?: O | null | void) => $ObjMap<O, Optional> {
+    return (obj) => {
+        if (!keys || !obj) {
+            return {};
+        }
+        const validKeys = keys.filter(key => key in obj);
+        const filteredProps = validKeys.map(key => ({
+            [key]: obj[key],
+        }));
         return Object.assign({}, ...filteredProps);
     };
 }

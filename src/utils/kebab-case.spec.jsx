@@ -1,4 +1,5 @@
-import {kebabCase} from './kebab-case';
+// @flow
+import { kebabCase } from './kebab-case';
 
 const SEP = '*/+ ^%$#@!&*()~-{}[];:,<>.\t\n\r';
 
@@ -38,9 +39,9 @@ describe('kebabCase', () => {
     });
 
     it('should ignore non-word characters at beginning and end of string', () => {
-        expect(kebabCase(`${SEP}foo${SEP}`)).toBe('foo');
-        expect(kebabCase(`${SEP}foo-bar${SEP}`)).toBe('foo-bar');
-        expect(kebabCase(`${SEP}foo-bar-baz${SEP}`)).toBe('foo-bar-baz');
+        expect(kebabCase(`-${SEP}foo${SEP}-`)).toBe('foo');
+        expect(kebabCase(`-${SEP}foo-bar${SEP}-`)).toBe('foo-bar');
+        expect(kebabCase(`-${SEP}foo-bar-baz${SEP}-`)).toBe('foo-bar-baz');
     });
 
     it('should leave empty string as is', () => {

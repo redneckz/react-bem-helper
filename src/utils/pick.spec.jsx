@@ -1,11 +1,12 @@
-import {pick} from './pick';
+// @flow
+import { pick } from './pick';
 
 describe('pick', () => {
     it('should pick only whitelisted keys from object and produce the new one', () => {
         const whitelist = ['foo', 'bar'];
         const foo = {};
         const bar = {};
-        const obj = {foo, bar, quux: 123};
+        const obj = { foo, bar, quux: 123 };
         const pruned = pick(whitelist)(obj);
         expect(Object.keys(pruned)).toEqual(whitelist);
         expect(pruned.foo).toBe(foo);
@@ -20,7 +21,7 @@ describe('pick', () => {
     });
 
     it('should return empty object if whitelist is empty', () => {
-        const obj = {foo: 123};
+        const obj = { foo: 123 };
         expect(pick()(obj)).toEqual({});
         expect(pick([])(obj)).toEqual({});
         expect(pick(null)(obj)).toEqual({});
