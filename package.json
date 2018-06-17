@@ -1,6 +1,6 @@
 {
   "name": "@redneckz/react-bem-helper",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "author": "Alexander Alexandrov",
   "description": "BEM library for React",
   "keywords": [
@@ -71,10 +71,8 @@
     "prepublish": "npm run build",
     "prebuild": "npm run eslint && npm run jest && npm run clean",
     "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
-    "build:commonjs":
-      "rollup --environment NODE_ENV:cjs -c -o lib/index.js && npm run build:flow -- lib",
-    "build:es":
-      "rollup --environment NODE_ENV:es -c -o es/index.js && npm run build:flow -- es",
+    "build:commonjs": "rollup --environment NODE_ENV:cjs -c -o lib/index.js && npm run build:flow -- lib",
+    "build:es": "rollup --environment NODE_ENV:es -c -o es/index.js && npm run build:flow -- es",
     "build:umd": "rollup --environment NODE_ENV:development -c -o dist/index.js",
     "build:umd:min": "rollup --environment NODE_ENV:production -c -o dist/index.min.js",
     "build:flow": "flow-copy-source --ignore **/*.spec.* src",
