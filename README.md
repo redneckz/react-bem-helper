@@ -5,7 +5,6 @@ BEM library for React
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
-[![Dependency Status][npm-deps-image]][npm-deps-url]
 
 # Table of Contents
 
@@ -337,8 +336,6 @@ Config.COMPONENT_BASE_CLASS = React.PureComponent;
 
 [npm-image]: https://badge.fury.io/js/%40redneckz%2Freact-bem-helper.svg
 [npm-url]: https://www.npmjs.com/package/%40redneckz%2Freact-bem-helper
-[npm-deps-image]: https://www.versioneye.com/user/projects/59280e6f131ac0004ae2fe2b/badge.svg?style=flat-square
-[npm-deps-url]: https://www.versioneye.com/user/projects/59280e6f131ac0004ae2fe2b
 [travis-image]: https://travis-ci.org/redneckz/react-bem-helper.svg?branch=master
 [travis-url]: https://travis-ci.org/redneckz/react-bem-helper
 [coveralls-image]: https://coveralls.io/repos/github/redneckz/react-bem-helper/badge.svg?branch=master
