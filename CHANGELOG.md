@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.2] - 2018-12-24
+
+### Added
+
+-   ☆ TypeScript definitions ☆
+
 ## [2.0.1] - 2018-08-06
 
 ### Changed
@@ -121,12 +127,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   _Coveralls_ integration
 -   _README_ with the very basic documentation
 
-[unreleased]: https://github.com/redneckz/react-bem-helper/compare/v2.0.1...HEAD
-[1.0.1]: https://github.com/redneckz/react-bem-helper/compare/v1.0.0...v1.0.1
-[1.0.2]: https://github.com/redneckz/react-bem-helper/compare/v1.0.1...v1.0.2
-[1.0.3]: https://github.com/redneckz/react-bem-helper/compare/v1.0.2...v1.0.3
-[1.0.4]: https://github.com/redneckz/react-bem-helper/compare/v1.0.3...v1.0.4
-[1.1.0]: https://github.com/redneckz/react-bem-helper/compare/v1.0.4...v1.1.0
-[1.1.1]: https://github.com/redneckz/react-bem-helper/compare/v1.1.0...v1.1.1
-[2.0.0]: https://github.com/redneckz/react-bem-helper/compare/v1.1.1...v2.0.0
+[unreleased]: https://github.com/redneckz/react-bem-helper/compare/v2.0.2...HEAD
+[2.0.2]: https://github.com/redneckz/react-bem-helper/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/redneckz/react-bem-helper/compare/v2.0.0...v2.0.1
+[2.0.0]: https://github.com/redneckz/react-bem-helper/compare/v1.1.1...v2.0.0
+[1.1.1]: https://github.com/redneckz/react-bem-helper/compare/v1.1.0...v1.1.1
+[1.1.0]: https://github.com/redneckz/react-bem-helper/compare/v1.0.4...v1.1.0
+[1.0.4]: https://github.com/redneckz/react-bem-helper/compare/v1.0.3...v1.0.4
+[1.0.3]: https://github.com/redneckz/react-bem-helper/compare/v1.0.2...v1.0.3
+[1.0.2]: https://github.com/redneckz/react-bem-helper/compare/v1.0.1...v1.0.2
+[1.0.1]: https://github.com/redneckz/react-bem-helper/compare/v1.0.0...v1.0.1
