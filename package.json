@@ -24,7 +24,8 @@
     "src",
     "lib",
     "es",
-    "dist"
+    "dist",
+    "bem.d.ts"
   ],
   "peerDependencies": {
     "react": "^16.4.0-0"

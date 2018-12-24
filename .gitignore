@@ -4,6 +4,7 @@ es/
 dist/
 coverage/
 /npm-debug.log
+.cache
 .cache/*
 !.cache/.gitkeep
 yarn-error.log
