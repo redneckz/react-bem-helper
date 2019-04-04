@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import type { DOMComponent } from '../bem-helper-types';
-import { pick } from '../utils';
+import { pick, stringifyBooleanProps } from '../utils';
 
 const KNOWN_KEYS = ['key', 'className', 'children'];
 
@@ -17,7 +17,7 @@ export function tag(tagName: string): <Attrs: {}>(attrs?: Attrs) => DOMComponent
         const Tag = props =>
             React.createElement(tagName, {
                 ...attrs,
-                ...prune(props),
+                ...prune(stringifyBooleanProps(props)),
             });
         Tag.displayName = `tag(${tagName})`;
         return Tag;

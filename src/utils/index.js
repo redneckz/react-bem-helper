@@ -5,3 +5,4 @@ export { decapitalize } from './decapitalize';
 export { kebabCase } from './kebab-case';
 export { kebabToCamelCase } from './kebab-to-camel-case';
 export { classNamesList } from './class-names-list';
+export { stringifyBooleanProps } from './stringify-boolean-props';
