@@ -5,18 +5,21 @@ BEM library for React
 [![NPM Version][npm-image]][npm-url]
 [![Build Status][travis-image]][travis-url]
 [![Coverage Status][coveralls-image]][coveralls-url]
+[![Bundle size][bundlephobia-image]][bundlephobia-url]
 
 # Table of Contents
 
--   [Installation](#installation)
--   [Motivation](#motivation)
--   [Features](#features)
--   [Prerequisites](#prerequisites)
--   [Usage](#usage)
--   [Configuration](#configuration)
-    -   [BEM naming convention](#bem-naming-convention)
-    -   [Flow](#flow)
--   [License](#license)
+- [react-bem-helper](#react-bem-helper)
+- [Table of Contents](#Table-of-Contents)
+- [Installation](#Installation)
+- [Motivation](#Motivation)
+- [Features](#Features)
+- [Prerequisites](#Prerequisites)
+- [Usage](#Usage)
+  - [Configuration](#Configuration)
+    - [BEM naming convention](#BEM-naming-convention)
+    - [Flow](#Flow)
+- [License](#License)
 
 # Installation
 
@@ -201,3 +204,5 @@ Do not forget to configure includes and ignores to put library into scope.
 [travis-url]: https://travis-ci.org/redneckz/react-bem-helper
 [coveralls-image]: https://coveralls.io/repos/github/redneckz/react-bem-helper/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/redneckz/react-bem-helper?branch=master
+[bundlephobia-image]: https://badgen.net/bundlephobia/min/@redneckz/react-bem-helper
+[bundlephobia-url]: https://bundlephobia.com/result?p=@redneckz/react-bem-helper
