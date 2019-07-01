@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 
+## [2.0.4] - 2019-07-01
+
+### Changed
+
+-   Updated dependencies (React, ...)
+
+### Added
+
+-   Bundle size badge
+
 ## [2.0.3] - 2018-12-24
 
 ### Fixed
@@ -133,7 +143,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/).
 -   _Coveralls_ integration
 -   _README_ with the very basic documentation
 
-[unreleased]: https://github.com/redneckz/react-bem-helper/compare/v2.0.3...HEAD
+[unreleased]: https://github.com/redneckz/react-bem-helper/compare/v2.0.4...HEAD
+[2.0.4]: https://github.com/redneckz/react-bem-helper/compare/v2.0.3...v2.0.4
 [2.0.3]: https://github.com/redneckz/react-bem-helper/compare/v2.0.2...v2.0.3
 [2.0.2]: https://github.com/redneckz/react-bem-helper/compare/v2.0.1...v2.0.2
 [2.0.1]: https://github.com/redneckz/react-bem-helper/compare/v2.0.0...v2.0.1
