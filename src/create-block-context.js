@@ -1,5 +1,5 @@
 // @flow
-import React from 'react';
+import * as React from 'react';
 import type { CSSModule } from './bem-helper-types';
 
 export type BlockContext = {|
@@ -11,18 +11,18 @@ export type BlockContext = {|
 const blockContextsMap: { [string]: BlockContext } = {};
 
 export function createBlockContext({
-    name,
-    styles,
+  name,
+  styles,
 }: {
     name: string,
     styles?: CSSModule | void,
 }): BlockContext {
-    if (!blockContextsMap[name]) {
-        blockContextsMap[name] = {
-            name,
-            styles,
-            modifiersContext: React.createContext(),
-        };
-    }
-    return blockContextsMap[name];
+  if (!blockContextsMap[name]) {
+    blockContextsMap[name] = {
+      name,
+      styles,
+      modifiersContext: React.createContext(),
+    };
+  }
+  return blockContextsMap[name];
 }

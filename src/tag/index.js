@@ -1,2 +1,4 @@
 // @flow
-export { tag, div, span, form, button, input, label, textarea } from './tag';
+export {
+  tag, div, span, form, button, input, label, textarea,
+} from './tag';

@@ -8,27 +8,31 @@ export { createBlockContext } from './create-block-context';
 
 export { block } from './block';
 export { element, transparent } from './element';
-export { modifier, is, startsWith, and, or, not } from './modifier';
+export {
+  modifier, is, startsWith, and, or, not,
+} from './modifier';
 export { Modifiers }; // Namespape
 
-export { tag, div, span, form, button, input, label, textarea } from './tag';
+export {
+  tag, div, span, form, button, input, label, textarea,
+} from './tag';
 export { Tags }; // Namespape
 
 export {
-    pick,
-    capitalize,
-    decapitalize,
-    kebabCase,
-    kebabToCamelCase,
-    classNamesList,
+  pick,
+  capitalize,
+  decapitalize,
+  kebabCase,
+  kebabToCamelCase,
+  classNamesList,
 } from './utils';
 
 export type {
-    CSSModule,
-    HOC,
-    Component,
-    DOMComponent,
-    DOMAttrs,
-    BEMEntityProps,
-    BEMEntityHOC,
+  CSSModule,
+  HOC,
+  Component,
+  DOMComponent,
+  DOMAttrs,
+  BEMEntityProps,
+  BEMEntityHOC,
 } from './bem-helper-types';

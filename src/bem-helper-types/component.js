@@ -1,6 +1,7 @@
 // @flow
+import * as React from 'react';
 
-export type Component<A> = React$ComponentType<A>;
+export type Component<A> = React.AbstractComponent<A>;
 
 export type DOMAttrs = {
     id?: string,

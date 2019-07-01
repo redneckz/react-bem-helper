@@ -1,12 +1,14 @@
 [ignore]
 .*/node_modules/.*
 
-[include]
-
-[libs]
-
 [lints]
+all=warn
+unclear-type=off
+untyped-import=off
+sketchy-null-mixed=off
+sketchy-null-string=off
 
 [options]
-
-[strict]
+suppress_comment=\\(.\\|\n\\)*\\$ExpectError
+suppress_comment=\\(.\\|\n\\)*\\$FlowIgnore
+include_warnings=true
